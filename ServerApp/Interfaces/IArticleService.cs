@@ -1,13 +1,10 @@
 ﻿using ServerApp.DTO;
+using ServerApp.Models;
 
 namespace ServerApp.Interfaces
 {
-    public interface IArticleService
+    public interface IArticleService : IService<Article>
     {
-        List<ArticleDTO> Get();
-        ArticleDTO GetById(int id);
-        bool Add(ArticleDTO articleDTO);
-        bool Update(int id,ArticleDTO articleDTO);
-        bool DeleteById(int id);
+        Task<bool> AddComment(Comment comment);
     }
 }

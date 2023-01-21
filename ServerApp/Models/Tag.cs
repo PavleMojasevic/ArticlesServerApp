@@ -2,8 +2,8 @@
 {
     public class Tag
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
-        public List<Article> Articles { get; set; }
+        public List<Article> Articles { get; set; }=new List<Article>();    
     }
 }

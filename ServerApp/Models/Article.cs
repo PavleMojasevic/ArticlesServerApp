@@ -2,14 +2,15 @@
 {
     public class Article
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Title { get; set; }
-        public string ImageUrl { get; set; }
-        public string Author { get; set; }
-        public string Category { get; set; }
-        public List<Comment> Comments { get; set; } = new List<Comment>();
-        public List<Content> Content { get; set; } = new List<Content>();
+        public byte[] Image { get; set; }
+        public long AuthorId { get; set; }
+        public User Author { get; set; }
+        public Category Category { get; set; }
+        public long CategoryId { get; set; }
         public DateTime Date { get; set; }
+        public List<Comment> Comments { get; set; } = new List<Comment>(); 
         public List<Tag> Tags { get; set; } = new List<Tag>();
     }
 }

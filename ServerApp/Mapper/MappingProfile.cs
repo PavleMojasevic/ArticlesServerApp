@@ -9,8 +9,7 @@ namespace ServerApp.Mapper
         public MappingProfile()
         {
             CreateMap<Article, ArticleDTO>().ReverseMap();
-            CreateMap<Comment, CommentDTO>().ReverseMap();
-            CreateMap<Content, ContentDTO>().ReverseMap();
+            CreateMap<Comment, CommentDTO>().ReverseMap(); 
             CreateMap<Tag, TagDTO>().ReverseMap();
         }
     }
