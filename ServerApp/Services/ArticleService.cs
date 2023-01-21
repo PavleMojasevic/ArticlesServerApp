@@ -8,33 +8,42 @@ namespace ServerApp.Services
 {
     public class ArticleService : IArticleService
     {
-        private VoziNaStrujuDbContext _voziNaStrujuDbContext;
-        private readonly IMapper _mapper;
-        public bool Add(ArticleDTO articleDTO)
+        private VoziNaStrujuDbContext _DbContext;
+
+        public ArticleService(VoziNaStrujuDbContext dbContext)
         {
-            Article article = _mapper.Map<Article>(articleDTO);
-            _voziNaStrujuDbContext.Articles.Add(article);
+            _DbContext = dbContext;
+        }
+
+        public async Task<bool> Add(Article article)
+        { 
+            _DbContext.Articles.Add(article);
             return true;
         }
 
-        public bool DeleteById(int id)
+        public async Task<bool> AddComment(Comment comment)
+        {
+            _DbContext.Comments.Add(comment);
+            return true;
+        }
+
+        public async Task<bool> DeleteById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public List<ArticleDTO> Get()
-        {
-            List<ArticleDTO> articles=_mapper.Map<List<ArticleDTO>>(_voziNaStrujuDbContext.Articles).ToList();
-            return articles;
+        public async Task<List<Article>> Get()
+        { 
+            return _DbContext.Articles.ToList();
         }
 
-        public ArticleDTO GetById(int id)
+        public async Task<Article?> GetById(int id)
         {
-            ArticleDTO article = _mapper.Map<ArticleDTO>(_voziNaStrujuDbContext.Articles.Find(id));
+            Article? article = await _DbContext.Articles.FindAsync(id);
             return article;
         }
 
-        public bool Update(int id,ArticleDTO articleDTO)
+        public async Task<bool> Update(int id, Article article)
         {
             throw new NotImplementedException();
         }
