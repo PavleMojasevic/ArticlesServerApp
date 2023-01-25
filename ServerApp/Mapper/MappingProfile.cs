@@ -10,6 +10,7 @@ namespace ServerApp.Mapper
         {
             CreateMap<Article, ArticleDTO>().ReverseMap();
             CreateMap<Comment, CommentDTO>().ReverseMap(); 
+            CreateMap<Comment, CommentAddDTO>().ReverseMap(); 
             CreateMap<Tag, TagDTO>().ReverseMap();
         }
     }

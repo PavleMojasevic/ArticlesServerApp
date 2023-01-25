@@ -27,7 +27,7 @@ namespace ServerApp.Services
             return true;
         }
 
-        public async Task<bool> DeleteById(int id)
+        public async Task<bool> DeleteById(long id)
         {
             throw new NotImplementedException();
         }
@@ -37,13 +37,13 @@ namespace ServerApp.Services
             return _DbContext.Articles.ToList();
         }
 
-        public async Task<Article?> GetById(int id)
+        public async Task<Article?> GetById(long id)
         {
             Article? article = await _DbContext.Articles.FindAsync(id);
             return article;
         }
 
-        public async Task<bool> Update(int id, Article article)
+        public async Task<bool> Update(long id, Article article)
         {
             throw new NotImplementedException();
         }

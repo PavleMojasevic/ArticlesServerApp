@@ -35,7 +35,7 @@ namespace ServerApp.Services
             return _DbContext.Users.ToList();
         }
 
-        public async Task<User?> GetById(int id)
+        public async Task<User?> GetById(long id)
         {
             return await _DbContext.Users.FindAsync(id);
         }
@@ -69,11 +69,11 @@ namespace ServerApp.Services
             return new JWToken() { Token = new JwtSecurityTokenHandler().WriteToken(tokeOptions) };
         }
 
-        public Task<bool> Update(int id, User user)
+        public Task<bool> Update(long id, User user)
         {
             throw new NotImplementedException();
         }
-        public Task<bool> DeleteById(int id)
+        public Task<bool> DeleteById(long id)
         {
             throw new NotImplementedException();
         }

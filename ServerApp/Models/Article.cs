@@ -4,7 +4,7 @@
     {
         public long Id { get; set; }
         public string Title { get; set; }
-        public byte[] Image { get; set; }
+        public byte[]? Image { get; set; }
         public long AuthorId { get; set; }
         public User Author { get; set; }
         public Category Category { get; set; }

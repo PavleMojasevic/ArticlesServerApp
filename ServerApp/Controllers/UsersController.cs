@@ -31,7 +31,7 @@ namespace ServerApp.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get(long id)
         {
             User? user = await _UserService.GetById(id);
             if(user==null)
@@ -69,7 +69,7 @@ namespace ServerApp.Controllers
         }
          
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] UserDTO userDTO)
+        public async Task<IActionResult> Put(long id, [FromBody] UserDTO userDTO)
         {
             User user = _Mapper.Map<User>(userDTO);
 
@@ -79,7 +79,7 @@ namespace ServerApp.Controllers
         }
          
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(long id)
         {
             if (await _UserService.DeleteById(id))
                 return Ok();
