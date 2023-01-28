@@ -36,6 +36,7 @@ namespace TestServerApp.Controllers
         [InlineData(-4, false)]
         [InlineData(2, true)]
         [InlineData(3, false)]
+        [InlineData(3, true)]
         public async Task GetById_HasValue(long id, bool hasValue)
         {
             var todoService = new Mock<IArticleService>();
