@@ -11,8 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TestServerApp.MockData;
 
-namespace TestServerApp.MockData
+namespace TestServerApp.Controllers
 {
 
     public class TestArticleController
@@ -20,13 +21,13 @@ namespace TestServerApp.MockData
 
         [Fact]
         public async Task Get_ShouldReturn200Status()
-        { 
+        {
             var todoService = new Mock<IArticleService>();
             MockArticles mockArticles = new MockArticles();
             todoService.Setup(_ => _.Get()).ReturnsAsync(mockArticles.GetArticles());
             var sut = new ArticleController(todoService.Object, MockMapper.GetMapper());
-             
-            var result = (OkObjectResult)await sut.Get(); 
+
+            var result = (OkObjectResult)await sut.Get();
 
             result.StatusCode.Should().Be(200);
         }
@@ -50,28 +51,28 @@ namespace TestServerApp.MockData
         }
         [Fact]
         public async Task Add_ShouldReturn200Status()
-        { 
+        {
             var todoService = new Mock<IArticleService>();
             MockArticles mockArticles = new MockArticles();
             todoService.Setup(_ => _.Add(It.IsAny<Article>())).ReturnsAsync(true);
             var sut = new ArticleController(todoService.Object, MockMapper.GetMapper());
-             
-            var result = (OkObjectResult)await sut.Add(new ()); 
 
-            result.StatusCode.Should().Be(200); 
+            var result = (OkObjectResult)await sut.Add(new());
+
+            result.StatusCode.Should().Be(200);
         }
         [Fact]
         public async Task Add_ShouldReturn400Status()
-        { 
+        {
             var todoService = new Mock<IArticleService>();
             MockArticles mockArticles = new MockArticles();
-            Article article=new Article();    
+            Article article = new Article();
             todoService.Setup(_ => _.Add(It.IsAny<Article>())).Throws(new Exception());
             var sut = new ArticleController(todoService.Object, MockMapper.GetMapper());
-             
-            var result = (BadRequestObjectResult)await sut.Add(new ()); 
 
-            result.StatusCode.Should().Be(400); 
+            var result = (BadRequestObjectResult)await sut.Add(new());
+
+            result.StatusCode.Should().Be(400);
         }
         [Theory]
         [InlineData(1, true)]
@@ -100,7 +101,7 @@ namespace TestServerApp.MockData
         {
             var todoService = new Mock<IArticleService>();
             MockArticles mockArticles = new MockArticles();
-            todoService.Setup(_ => _.DeleteById(id)).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id)!=null);
+            todoService.Setup(_ => _.DeleteById(id)).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
             var sut = new ArticleController(todoService.Object, MockMapper.GetMapper());
 
             var result = await sut.Delete(id);
@@ -118,10 +119,10 @@ namespace TestServerApp.MockData
         {
             var todoService = new Mock<IArticleService>();
             MockArticles mockArticles = new MockArticles();
-            todoService.Setup(_ => _.AddComment(It.IsAny<Comment>())).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id)!=null);
+            todoService.Setup(_ => _.AddComment(It.IsAny<Comment>())).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
             var sut = new ArticleController(todoService.Object, MockMapper.GetMapper());
 
-            var result = await sut.AddComment(new ());
+            var result = await sut.AddComment(new());
             if (hasValue)
                 Assert.IsType<OkResult>(result);
             else
