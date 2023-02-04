@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -66,7 +66,7 @@ namespace TestServerApp.Controllers
         {
             var articleService = new Mock<IArticleService>();
             MockArticles mockArticles = new();
-            Article article = new Article();
+            Article article = new();
             articleService.Setup(_ => _.Add(It.IsAny<Article>())).Throws(new Exception());
             var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
 
