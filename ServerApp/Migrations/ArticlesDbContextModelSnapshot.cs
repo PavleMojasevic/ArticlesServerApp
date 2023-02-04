@@ -7,260 +7,259 @@ using ServerApp.Infrastucture;
 
 #nullable disable
 
-namespace ServerApp.Migrations
+namespace ServerApp.Migrations;
+
+[DbContext(typeof(Infrastucture.ArticlesDbContext))]
+partial class ArticlesDbContextModelSnapshot : ModelSnapshot
 {
-    [DbContext(typeof(Infrastucture.ArticlesDbContext))]
-    partial class ArticlesDbContextModelSnapshot : ModelSnapshot
+    protected override void BuildModel(ModelBuilder modelBuilder)
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.13");
+        modelBuilder.HasAnnotation("ProductVersion", "6.0.13");
 
-            modelBuilder.Entity("ArticleTag", b =>
-                {
-                    b.Property<long>("ArticlesId")
-                        .HasColumnType("INTEGER");
+        modelBuilder.Entity("ArticleTag", b =>
+            {
+                b.Property<long>("ArticlesId")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<long>("TagsId")
-                        .HasColumnType("INTEGER");
+                b.Property<long>("TagsId")
+                    .HasColumnType("INTEGER");
 
-                    b.HasKey("ArticlesId", "TagsId");
+                b.HasKey("ArticlesId", "TagsId");
 
-                    b.HasIndex("TagsId");
+                b.HasIndex("TagsId");
 
-                    b.ToTable("ArticleTag");
-                });
+                b.ToTable("ArticleTag");
+            });
 
-            modelBuilder.Entity("ServerApp.Models.Article", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+        modelBuilder.Entity("ServerApp.Models.Article", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
 
-                    b.Property<long>("AuthorId")
-                        .HasColumnType("INTEGER");
+                b.Property<long>("AuthorId")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<long>("CategoryId")
-                        .HasColumnType("INTEGER");
+                b.Property<long>("CategoryId")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
+                b.Property<DateTime>("Date")
+                    .HasColumnType("TEXT");
 
-                    b.Property<byte[]>("Image")
-                        .IsRequired()
-                        .HasColumnType("BLOB");
+                b.Property<byte[]>("Image")
+                    .IsRequired()
+                    .HasColumnType("BLOB");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                b.Property<string>("Title")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                b.HasIndex("AuthorId");
 
-                    b.HasIndex("CategoryId");
+                b.HasIndex("CategoryId");
 
-                    b.ToTable("Articles");
-                });
+                b.ToTable("Articles");
+            });
 
-            modelBuilder.Entity("ServerApp.Models.Category", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+        modelBuilder.Entity("ServerApp.Models.Category", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
 
-                    b.Property<long?>("ParentId")
-                        .HasColumnType("INTEGER");
+                b.Property<long?>("ParentId")
+                    .HasColumnType("INTEGER");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                b.HasIndex("ParentId");
 
-                    b.ToTable("Category");
-                });
+                b.ToTable("Category");
+            });
 
-            modelBuilder.Entity("ServerApp.Models.Comment", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+        modelBuilder.Entity("ServerApp.Models.Comment", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
 
-                    b.Property<long>("ArticleId")
-                        .HasColumnType("INTEGER");
+                b.Property<long>("ArticleId")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<long>("AuthorId")
-                        .HasColumnType("INTEGER");
+                b.Property<long>("AuthorId")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("TEXT");
+                b.Property<DateTime>("Date")
+                    .HasColumnType("TEXT");
 
-                    b.Property<int>("Dislikes")
-                        .HasColumnType("INTEGER");
+                b.Property<int>("Dislikes")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<int>("Likes")
-                        .HasColumnType("INTEGER");
+                b.Property<int>("Likes")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<long?>("ParentId")
-                        .HasColumnType("INTEGER");
+                b.Property<long?>("ParentId")
+                    .HasColumnType("INTEGER");
 
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                b.Property<string>("Text")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("ArticleId");
+                b.HasIndex("ArticleId");
 
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Comments");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.Tag", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.User", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Role")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
-                });
-
-            modelBuilder.Entity("ArticleTag", b =>
-                {
-                    b.HasOne("ServerApp.Models.Article", null)
-                        .WithMany()
-                        .HasForeignKey("ArticlesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ServerApp.Models.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ServerApp.Models.Article", b =>
-                {
-                    b.HasOne("ServerApp.Models.User", "Author")
-                        .WithMany("Articles")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("ServerApp.Models.Category", "Category")
-                        .WithMany("Articles")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.Category", b =>
-                {
-                    b.HasOne("ServerApp.Models.Category", "Parent")
-                        .WithMany("Subcategories")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.Comment", b =>
-                {
-                    b.HasOne("ServerApp.Models.Article", "Article")
-                        .WithMany("Comments")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ServerApp.Models.User", "Author")
-                        .WithMany("Comments")
-                        .HasForeignKey("AuthorId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
-                    b.HasOne("ServerApp.Models.Comment", "Parent")
-                        .WithMany("Replies")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Article");
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.Article", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.Category", b =>
-                {
-                    b.Navigation("Articles");
-
-                    b.Navigation("Subcategories");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.Comment", b =>
-                {
-                    b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.User", b =>
-                {
-                    b.Navigation("Articles");
-
-                    b.Navigation("Comments");
-                });
+                b.HasIndex("AuthorId");
+
+                b.HasIndex("ParentId");
+
+                b.ToTable("Comments");
+            });
+
+        modelBuilder.Entity("ServerApp.Models.Tag", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
+
+                b.Property<string>("Name")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.HasKey("Id");
+
+                b.ToTable("Tags");
+            });
+
+        modelBuilder.Entity("ServerApp.Models.User", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("INTEGER");
+
+                b.Property<DateTime>("Created")
+                    .HasColumnType("TEXT");
+
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.Property<string>("Password")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.Property<int>("Role")
+                    .HasColumnType("INTEGER");
+
+                b.Property<string>("Username")
+                    .IsRequired()
+                    .HasColumnType("TEXT");
+
+                b.HasKey("Id");
+
+                b.ToTable("User");
+            });
+
+        modelBuilder.Entity("ArticleTag", b =>
+            {
+                b.HasOne("ServerApp.Models.Article", null)
+                    .WithMany()
+                    .HasForeignKey("ArticlesId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("ServerApp.Models.Tag", null)
+                    .WithMany()
+                    .HasForeignKey("TagsId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+            });
+
+        modelBuilder.Entity("ServerApp.Models.Article", b =>
+            {
+                b.HasOne("ServerApp.Models.User", "Author")
+                    .WithMany("Articles")
+                    .HasForeignKey("AuthorId")
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .IsRequired();
+
+                b.HasOne("ServerApp.Models.Category", "Category")
+                    .WithMany("Articles")
+                    .HasForeignKey("CategoryId")
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .IsRequired();
+
+                b.Navigation("Author");
+
+                b.Navigation("Category");
+            });
+
+        modelBuilder.Entity("ServerApp.Models.Category", b =>
+            {
+                b.HasOne("ServerApp.Models.Category", "Parent")
+                    .WithMany("Subcategories")
+                    .HasForeignKey("ParentId")
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                b.Navigation("Parent");
+            });
+
+        modelBuilder.Entity("ServerApp.Models.Comment", b =>
+            {
+                b.HasOne("ServerApp.Models.Article", "Article")
+                    .WithMany("Comments")
+                    .HasForeignKey("ArticleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.HasOne("ServerApp.Models.User", "Author")
+                    .WithMany("Comments")
+                    .HasForeignKey("AuthorId")
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .IsRequired();
+
+                b.HasOne("ServerApp.Models.Comment", "Parent")
+                    .WithMany("Replies")
+                    .HasForeignKey("ParentId")
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                b.Navigation("Article");
+
+                b.Navigation("Author");
+
+                b.Navigation("Parent");
+            });
+
+        modelBuilder.Entity("ServerApp.Models.Article", b =>
+            {
+                b.Navigation("Comments");
+            });
+
+        modelBuilder.Entity("ServerApp.Models.Category", b =>
+            {
+                b.Navigation("Articles");
+
+                b.Navigation("Subcategories");
+            });
+
+        modelBuilder.Entity("ServerApp.Models.Comment", b =>
+            {
+                b.Navigation("Replies");
+            });
+
+        modelBuilder.Entity("ServerApp.Models.User", b =>
+            {
+                b.Navigation("Articles");
+
+                b.Navigation("Comments");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

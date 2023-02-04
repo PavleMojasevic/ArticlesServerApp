@@ -4,6 +4,6 @@ namespace ServerApp.Interfaces
 {
     public interface IUserService : IService<User>
     {
-        Task<JWToken?> Login(LoginCredencials credencials);
+        Task<JWToken?> LoginAsync(LoginCredencials credencials);
     }
 }

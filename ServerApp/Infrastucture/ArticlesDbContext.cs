@@ -1,25 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ServerApp.Models;
 
-namespace ServerApp.Infrastucture
+namespace ServerApp.Infrastucture;
+
+public class ArticlesDbContext:DbContext
 {
-    public class ArticlesDbContext:DbContext
+
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<Comment> Comments { get; set; } 
+    public DbSet<Tag> Tags { get; set; }
+    public DbSet<User> Users{ get; set; }
+
+    public ArticlesDbContext(DbContextOptions options) : base(options)
     {
+    }
 
-        public DbSet<Article> Articles { get; set; }
-        public DbSet<Comment> Comments { get; set; } 
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<User> Users{ get; set; }
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
 
-        public ArticlesDbContext(DbContextOptions options) : base(options)
-        {
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ArticlesDbContext).Assembly);
-        }
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ArticlesDbContext).Assembly);
     }
 }

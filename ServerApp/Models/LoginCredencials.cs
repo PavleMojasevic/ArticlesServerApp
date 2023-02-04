@@ -1,8 +1,7 @@
-﻿namespace ServerApp.Models
+﻿namespace ServerApp.Models;
+
+public class LoginCredencials
 {
-    public class LoginCredencials
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
+    public string Username { get; set; }
+    public string Password { get; set; }
 }

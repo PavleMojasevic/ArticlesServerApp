@@ -23,24 +23,24 @@ namespace ServerApp.Controllers
             _UserService = userService;
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAsync()
         {
-            List<User> articles = await _UserService.Get();
+            List<User> articles = await _UserService.GetAsync();
             return Ok(_Mapper.Map<List<UserDTO>>(articles));
         }
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> GetById(long id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
-            User? user = await _UserService.GetById(id);
+            User? user = await _UserService.GetByIdAsync(id);
             if(user==null)
                 return NoContent();
             return Ok(_Mapper.Map<UserDTO>(user));
         }
          
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] UserDTO userDTO)
+        public async Task<IActionResult> AddAsync([FromBody] UserDTO userDTO)
         {
             try
             {
@@ -53,11 +53,11 @@ namespace ServerApp.Controllers
             }
         }
         [HttpPost("Login")]
-        public async Task<IActionResult> Login([FromBody] LoginCredencials credencials)
+        public async Task<IActionResult> LoginAsync([FromBody] LoginCredencials credencials)
         {
             try
             {
-                JWToken? token = await _UserService.Login(credencials);
+                JWToken? token = await _UserService.LoginAsync(credencials);
                 if (token == null)
                     return BadRequest();
                 return Ok(token);
@@ -69,11 +69,11 @@ namespace ServerApp.Controllers
         }
          
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, [FromBody] UserDTO userDTO)
+        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UserDTO userDTO)
         {
             User user = _Mapper.Map<User>(userDTO);
 
-            if (await _UserService.Update(id, user))
+            if (await _UserService.UpdateAsync(id, user))
                 return Ok();
             return BadRequest();
         }

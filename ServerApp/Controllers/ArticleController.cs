@@ -21,23 +21,23 @@ namespace ServerApp.Controllers
         }
         // GET: api/<ArticleController>
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetAsync()
         {
-            List<Article> articles = await _ArticleService.Get(); 
+            List<Article> articles = await _ArticleService.GetAsync(); 
             return Ok(_Mapper.Map<List<ArticleDTO>>(articles));
         }
          
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(long id)
+        public async Task<IActionResult> GetByIdAsync(long id)
         {
-            Article? article = await _ArticleService.GetById(id);
+            Article? article = await _ArticleService.GetByIdAsync(id);
             if (article == null)
                 return NoContent();
             return Ok(_Mapper.Map<ArticleDTO>(article)); 
         }
          
         [HttpPost]
-        public async Task<IActionResult> Add([FromBody] ArticleDTO articleDTO)
+        public async Task<IActionResult> AddAsync([FromBody] ArticleDTO articleDTO)
         {
             try
             {
@@ -52,23 +52,23 @@ namespace ServerApp.Controllers
 
         // PUT api/<ArticleController>/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(long id, [FromBody] ArticleDTO articleDTO)
+        public async Task<IActionResult> UpdateAsync(long id, [FromBody] ArticleDTO articleDTO)
         {
             Article article = _Mapper.Map<Article>(articleDTO); 
 
-            if (await _ArticleService.Update(id, article))
+            if (await _ArticleService.UpdateAsync(id, article))
                 return Ok();
             return BadRequest();
         }
          
         [HttpPost("Comment")]
         [Authorize]
-        public async Task<IActionResult> AddComment(CommentAddDTO commentDTO)
+        public async Task<IActionResult> AddCommentAsync(CommentAddDTO commentDTO)
         {
             Comment comment = _Mapper.Map<Comment>(commentDTO);
             //TODO
 
-            if (await _ArticleService.AddComment(comment))
+            if (await _ArticleService.AddCommentAsync(comment))
                 return Ok();
             return BadRequest(); 
         }

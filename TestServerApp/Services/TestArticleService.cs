@@ -13,44 +13,43 @@ using System.Text;
 using System.Threading.Tasks;
 using TestServerApp.MockData;
 
-namespace TestServerApp.Services
+namespace TestServerApp.Services;
+
+
+public class TestArticleService
 {
 
-    public class TestArticleService
+    [Theory]
+    [InlineData(-1, false)]
+    [InlineData(-2, false)]
+    [InlineData(1, true)]
+    [InlineData(2, true)]
+    [InlineData(3, true)]
+    public async Task Add_Test(long id, bool expected)
     {
-
-        [Theory]
-        [InlineData(-1, false)]
-        [InlineData(-2, false)]
-        [InlineData(1, true)]
-        [InlineData(2, true)]
-        [InlineData(3, true)]
-        public async Task Add_Test(long id, bool expected)
+        MockArticles mockArticles = new ();
+        Article? article;
+        if (id > 0)
         {
-            MockArticles mockArticles = new MockArticles();
-            Article? article;
-            if (id > 0)
-            {
-                article = mockArticles.GetArticles().FirstOrDefault(x => x.Id == id);
-            }
-            else
-            {
-                article = mockArticles.GetInvalidArticles().FirstOrDefault(x => x.Id == -id);
-            }
-            if (article == null)
-            {
-                Assert.True(!expected);
-                return;
-            }
-
-            var dbContext = new Mock<ArticlesDbContext>();
-            MockUsers mockUsers = new MockUsers();
-            dbContext.Setup(x => x.Articles.AddAsync(It.IsAny<Article>(), CancellationToken.None));
-            var sut = new ArticleService(dbContext.Object);
-
-            var result = await sut.Add(article);
-            Assert.True(expected==result);
-
+            article = mockArticles.GetArticles().FirstOrDefault(x => x.Id == id);
         }
+        else
+        {
+            article = mockArticles.GetInvalidArticles().FirstOrDefault(x => x.Id == -id);
+        }
+        if (article == null)
+        {
+            Assert.True(!expected);
+            return;
+        }
+
+        var dbContext = new Mock<ArticlesDbContext>();
+        MockUsers mockUsers = new();
+        dbContext.Setup(x => x.Articles.AddAsync(It.IsAny<Article>(), CancellationToken.None));
+        var sut = new ArticleService(dbContext.Object);
+
+        var result = await sut.Add(article);
+        Assert.True(expected==result);
+
     }
 }

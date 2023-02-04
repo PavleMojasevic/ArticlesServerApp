@@ -32,25 +32,25 @@ namespace ServerApp.Services
             return true;
         }
 
-        public async Task<bool> AddComment(Comment comment)
+        public async Task<bool> AddCommentAsync(Comment comment)
         {
             await _DbContext.Comments.AddAsync(comment);
             return true;
         }
 
 
-        public async Task<List<Article>> Get()
+        public async Task<List<Article>> GetAsync()
         { 
             return _DbContext.Articles.ToList();
         }
 
-        public async Task<Article?> GetById(long id)
+        public async Task<Article?> GetByIdAsync(long id)
         {
             Article? article = await _DbContext.Articles.FindAsync(id);
             return article;
         }
 
-        public async Task<bool> Update(long id, Article article)
+        public async Task<bool> UpdateAsync(long id, Article article)
         {
             throw new NotImplementedException();
         }

@@ -22,10 +22,10 @@ namespace TestServerApp.Controllers
         {
             var userService = new Mock<IUserService>();
             MockUsers mockUsers = new MockUsers();
-            userService.Setup(_ => _.Get()).ReturnsAsync(mockUsers.GetUsers());
+            userService.Setup(_ => _.GetAsync()).ReturnsAsync(mockUsers.GetUsers());
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
-            var result = (OkObjectResult)await sut.Get();
+            var result = (OkObjectResult)await sut.GetAsync();
 
             result.StatusCode.Should().Be(200);
         }
@@ -37,10 +37,10 @@ namespace TestServerApp.Controllers
         {
             var userService = new Mock<IUserService>();
             MockUsers mockUsers = new MockUsers();
-            userService.Setup(_ => _.GetById(id)).ReturnsAsync(mockUsers.GetUsers().FirstOrDefault(x => x.Id == id));
+            userService.Setup(_ => _.GetByIdAsync(id)).ReturnsAsync(mockUsers.GetUsers().FirstOrDefault(x => x.Id == id));
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
-            var result = await sut.GetById(id);
+            var result = await sut.GetByIdAsync(id);
             if (hasValue)
                 Assert.IsType<OkObjectResult>(result);
             else
@@ -54,7 +54,7 @@ namespace TestServerApp.Controllers
             userService.Setup(_ => _.Add(It.IsAny<User>())).ReturnsAsync(true);
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
-            var result = (OkObjectResult)await sut.Add(new());
+            var result = (OkObjectResult)await sut.AddAsync(new());
 
             result.StatusCode.Should().Be(200);
         }
@@ -67,7 +67,7 @@ namespace TestServerApp.Controllers
             userService.Setup(_ => _.Add(It.IsAny<User>())).Throws(new Exception());
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
-            var result = (BadRequestObjectResult)await sut.Add(new());
+            var result = (BadRequestObjectResult)await sut.AddAsync(new());
 
             result.StatusCode.Should().Be(400);
         }
@@ -81,11 +81,11 @@ namespace TestServerApp.Controllers
 
             var userService = new Mock<IUserService>();
             MockUsers mockUsers = new MockUsers();
-            userService.Setup(_ => _.Update(id, It.IsAny<User>())).ReturnsAsync(mockUsers.GetUsers().FirstOrDefault(x => x.Id == id) != null);
+            userService.Setup(_ => _.UpdateAsync(id, It.IsAny<User>())).ReturnsAsync(mockUsers.GetUsers().FirstOrDefault(x => x.Id == id) != null);
 
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
-            var result = await sut.Put(id, new());
+            var result = await sut.UpdateAsync(id, new());
             if (hasValue)
                 Assert.IsType<OkResult>(result);
             else

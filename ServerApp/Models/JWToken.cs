@@ -1,7 +1,6 @@
-﻿namespace ServerApp.Models
+﻿namespace ServerApp.Models;
+
+public class JWToken
 {
-    public class JWToken
-    {
-        public string Token { get; set; } 
-    }
+    public string Token { get; set; } 
 }

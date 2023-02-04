@@ -2,17 +2,16 @@
 using ServerApp.DTO;
 using ServerApp.Models;
 
-namespace ServerApp.Mapper
+namespace ServerApp.Mapper;
+
+public class MappingProfile : Profile
 {
-    public class MappingProfile : Profile
+    public MappingProfile()
     {
-        public MappingProfile()
-        {
-            CreateMap<Article, ArticleDTO>().ReverseMap();
-            CreateMap<Comment, CommentDTO>().ReverseMap(); 
-            CreateMap<Comment, CommentAddDTO>().ReverseMap(); 
-            CreateMap<Tag, TagDTO>().ReverseMap();
-            CreateMap<User, UserDTO>().ReverseMap();
-        }
+        CreateMap<Article, ArticleDTO>().ReverseMap();
+        CreateMap<Comment, CommentDTO>().ReverseMap(); 
+        CreateMap<Comment, CommentAddDTO>().ReverseMap(); 
+        CreateMap<Tag, TagDTO>().ReverseMap();
+        CreateMap<User, UserDTO>().ReverseMap();
     }
 }

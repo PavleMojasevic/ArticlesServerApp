@@ -30,12 +30,12 @@ namespace ServerApp.Services
         }
 
 
-        public async Task<List<User>> Get()
+        public async Task<List<User>> GetAsync()
         {
             return _DbContext.Users.ToList();
         }
 
-        public async Task<User?> GetById(long id)
+        public async Task<User?> GetByIdAsync(long id)
         {
             return await _DbContext.Users.FindAsync(id);
         }
@@ -50,7 +50,7 @@ namespace ServerApp.Services
                 return Convert.ToBase64String(computedHash);
             }
         }
-        public async Task<JWToken?> Login(LoginCredencials credencials)
+        public async Task<JWToken?> LoginAsync(LoginCredencials credencials)
         {
             var user = _DbContext.Users.FirstOrDefault(x => x.Username == credencials.Username && x.Password == Encode(credencials.Password));
             if (user==null)
@@ -58,18 +58,18 @@ namespace ServerApp.Services
             List<Claim> claims = new List<Claim>(); 
             claims.Add(new Claim("id", user.Id.ToString()));
             claims.Add(new Claim("role", user.Role.ToString()));   
-            SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_SecretKey.Value));
-            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            var tokeOptions = new JwtSecurityToken(
+            SymmetricSecurityKey secretKey = new (Encoding.UTF8.GetBytes(_SecretKey.Value));
+            SigningCredentials signinCredentials = new (secretKey, SecurityAlgorithms.HmacSha256);
+            JwtSecurityToken tokeOptions = new (
                    issuer: _TokenAddress.Value, 
                    claims: claims, 
                    expires: DateTime.Now.AddDays(1),
                    signingCredentials: signinCredentials 
                ); 
-            return new JWToken() { Token = new JwtSecurityTokenHandler().WriteToken(tokeOptions) };
+            return new () { Token = new JwtSecurityTokenHandler().WriteToken(tokeOptions) };
         }
 
-        public Task<bool> Update(long id, User user)
+        public Task<bool> UpdateAsync(long id, User user)
         {
             throw new NotImplementedException();
         } 

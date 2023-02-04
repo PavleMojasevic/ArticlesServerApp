@@ -9,19 +9,20 @@ namespace TestServerApp.MockData
 {
     public class MockArticles
     {
-        private MockUsers _MockUsers=new MockUsers();
+        private MockUsers _MockUsers;
 
         public MockArticles()
-        { 
+        {
+            _MockUsers = new();
         }
 
         public List<Article> GetArticles()
         {
             List<User> users = _MockUsers.GetUsersWithoutArticles();
 
-            List<Article> articles = new List<Article>
+            List<Article> articles = new()
             {
-                new Article
+                new ()
                 {
                     Author=users[0],
                     AuthorId=users[0].Id,
@@ -34,7 +35,7 @@ namespace TestServerApp.MockData
                     Tags=new List<Tag>{ new Tag { Name = "tag1" },new Tag{ Name = "tag2" } },
                     Title="title1"
                 },
-                new Article
+                new ()
                 {
                     Author=users[0],
                     AuthorId=users[0].Id,
@@ -56,9 +57,9 @@ namespace TestServerApp.MockData
         {
             List<User> users = _MockUsers.GetUsersWithoutArticles();
 
-            List<Article> articles = new List<Article>
+            List<Article> articles = new ()
             {
-                new Article
+                new ()
                 {
                     Author=users[0],
                     AuthorId=users[0].Id,
@@ -71,7 +72,7 @@ namespace TestServerApp.MockData
                     Tags=new List<Tag>{ new Tag { Name = "tag1" },new Tag{ Name = "tag2" } },
                     Title="title1"
                 },
-                new Article
+                new ()
                 {
                     Author=users[0],
                     AuthorId=users[0].Id,

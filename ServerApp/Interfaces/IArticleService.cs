@@ -5,6 +5,6 @@ namespace ServerApp.Interfaces
 {
     public interface IArticleService : IService<Article>
     {
-        Task<bool> AddComment(Comment comment);
+        Task<bool> AddCommentAsync(Comment comment);
     }
 }
