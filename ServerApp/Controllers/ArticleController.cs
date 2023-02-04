@@ -26,18 +26,16 @@ namespace ServerApp.Controllers
             List<Article> articles = await _ArticleService.Get(); 
             return Ok(_Mapper.Map<List<ArticleDTO>>(articles));
         }
-
-        // GET api/<ArticleController>/5
+         
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(long id)
         {
-            Article article = await _ArticleService.GetById(id);
+            Article? article = await _ArticleService.GetById(id);
             if (article == null)
                 return NoContent();
             return Ok(_Mapper.Map<ArticleDTO>(article)); 
         }
-
-        // POST api/<ArticleController>
+         
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] ArticleDTO articleDTO)
         {
@@ -62,15 +60,7 @@ namespace ServerApp.Controllers
                 return Ok();
             return BadRequest();
         }
-
-        // DELETE api/<ArticleController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
-        {
-            if (await _ArticleService.DeleteById(id))
-                return Ok();
-            return BadRequest(); 
-        }
+         
         [HttpPost("Comment")]
         [Authorize]
         public async Task<IActionResult> AddComment(CommentAddDTO commentDTO)

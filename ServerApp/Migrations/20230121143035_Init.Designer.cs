@@ -10,7 +10,7 @@ using ServerApp.Infrastucture;
 
 namespace ServerApp.Migrations
 {
-    [DbContext(typeof(VoziNaStrujuDbContext))]
+    [DbContext(typeof(Infrastucture.ArticlesDbContext))]
     [Migration("20230121143035_Init")]
     partial class Init
     {

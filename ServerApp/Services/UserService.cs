@@ -12,11 +12,11 @@ namespace ServerApp.Services
 {
     public class UserService:IUserService
     { 
-        private readonly VoziNaStrujuDbContext _DbContext;
+        private readonly ArticlesDbContext _DbContext;
         private readonly IConfigurationSection _SecretKey;
         private readonly IConfigurationSection _TokenAddress;
 
-        public UserService(VoziNaStrujuDbContext dbContext, IConfiguration config)
+        public UserService(ArticlesDbContext dbContext, IConfiguration config)
         {
             _DbContext = dbContext;
             _SecretKey = config.GetSection("SecretKey");
@@ -72,10 +72,6 @@ namespace ServerApp.Services
         public Task<bool> Update(long id, User user)
         {
             throw new NotImplementedException();
-        }
-        public Task<bool> DeleteById(long id)
-        {
-            throw new NotImplementedException();
-        }
+        } 
     }
 }

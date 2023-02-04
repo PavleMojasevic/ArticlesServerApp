@@ -8,29 +8,36 @@ namespace ServerApp.Services
 {
     public class ArticleService : IArticleService
     {
-        private VoziNaStrujuDbContext _DbContext;
+        private ArticlesDbContext _DbContext;
 
-        public ArticleService(VoziNaStrujuDbContext dbContext)
+        public ArticleService(ArticlesDbContext dbContext)
         {
             _DbContext = dbContext;
         }
 
         public async Task<bool> Add(Article article)
         { 
-            _DbContext.Articles.Add(article);
+            if(article.Image?.Length==0) return false;
+            if (string.IsNullOrWhiteSpace(article.Title)) return false;
+            if (article.Category==null)return false;
+
+             
+            if (_DbContext.Articles.Any(x => x.Title == article.Title)) return false;
+
+            article.CategoryId=article.Category.Id;
+            article.Comments = new List<Comment>();
+            article.Date = DateTime.Now;
+            
+            await _DbContext.Articles.AddAsync(article);
             return true;
         }
 
         public async Task<bool> AddComment(Comment comment)
         {
-            _DbContext.Comments.Add(comment);
+            await _DbContext.Comments.AddAsync(comment);
             return true;
         }
 
-        public async Task<bool> DeleteById(long id)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<List<Article>> Get()
         { 

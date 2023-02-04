@@ -21,8 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Service", Version = "v1" });
-    //Ovo dodajemo kako bi mogli da unesemo token u swagger prilikom testiranja
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Service", Version = "v1" }); 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -51,7 +50,8 @@ builder.Services.AddSwaggerGen(c =>
 
 
 builder.Services.AddScoped<IArticleService, ArticleService>();
-builder.Services.AddDbContext<VoziNaStrujuDbContext>(options => options.UseSqlite(builder.Configuration.GetConnectionString("VoziNaStrujuDatabase")));
+builder.Services.AddDbContext<ArticlesDbContext>(options => 
+    options.UseSqlite(builder.Configuration.GetConnectionString("DatabaseURL")));
 
 
 //-------------JWT---------------
@@ -61,14 +61,14 @@ builder.Services.AddAuthentication(opt => {
 })
           .AddJwtBearer(options =>
           {
-              options.TokenValidationParameters = new TokenValidationParameters //Podesavamo parametre za validaciju pristiglih tokena
+              options.TokenValidationParameters = new TokenValidationParameters
               {
-                  ValidateIssuer = true, //Validira izdavaoca tokena
-                  ValidateAudience = false, //Kazemo da ne validira primaoce tokena
-                  ValidateLifetime = true,//Validira trajanje tokena
-                  ValidateIssuerSigningKey = true, //validira potpis token, ovo je jako vazno!
-                  ValidIssuer = builder.Configuration["tokenAddress"], //odredjujemo koji server je validni izdavalac
-                  IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SecretKey"]))//navodimo privatni kljuc kojim su potpisani nasi tokeni
+                  ValidateIssuer = true,
+                  ValidateAudience = false, 
+                  ValidateLifetime = true,
+                  ValidateIssuerSigningKey = true, 
+                  ValidIssuer = builder.Configuration["tokenAddress"], 
+                  IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["SecretKey"]))
               };
           });
 

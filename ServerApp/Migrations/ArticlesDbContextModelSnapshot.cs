@@ -9,8 +9,8 @@ using ServerApp.Infrastucture;
 
 namespace ServerApp.Migrations
 {
-    [DbContext(typeof(VoziNaStrujuDbContext))]
-    partial class VoziNaStrujuDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(Infrastucture.ArticlesDbContext))]
+    partial class ArticlesDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {

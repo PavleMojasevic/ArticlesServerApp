@@ -22,6 +22,10 @@ namespace TestServerApp.MockData
             users.ForEach(x => x.Articles = new List<Article>());
             return _Users;
         }
+        public List<User> GetUsers()
+        { 
+            return _Users;
+        }
         private static User GetUser(long id, string username, UserRole role, List<Comment>?comments=null)
         {
             if(comments==null) comments = new List<Comment>();

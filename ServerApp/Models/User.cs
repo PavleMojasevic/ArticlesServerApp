@@ -16,7 +16,7 @@ namespace ServerApp.Models
 
         public object Clone()
         {
-            User user = new User
+            User user = new()
             {
                 Id = Id,
                 Articles = Articles,

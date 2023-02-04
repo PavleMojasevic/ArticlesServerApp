@@ -3,7 +3,7 @@ using ServerApp.Models;
 
 namespace ServerApp.Infrastucture
 {
-    public class VoziNaStrujuDbContext:DbContext
+    public class ArticlesDbContext:DbContext
     {
 
         public DbSet<Article> Articles { get; set; }
@@ -11,7 +11,7 @@ namespace ServerApp.Infrastucture
         public DbSet<Tag> Tags { get; set; }
         public DbSet<User> Users{ get; set; }
 
-        public VoziNaStrujuDbContext(DbContextOptions options) : base(options)
+        public ArticlesDbContext(DbContextOptions options) : base(options)
         {
         }
 
@@ -19,7 +19,7 @@ namespace ServerApp.Infrastucture
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(VoziNaStrujuDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ArticlesDbContext).Assembly);
         }
     }
 }

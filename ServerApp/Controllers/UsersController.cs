@@ -31,16 +31,16 @@ namespace ServerApp.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<IActionResult> Get(long id)
+        public async Task<IActionResult> GetById(long id)
         {
             User? user = await _UserService.GetById(id);
             if(user==null)
-                return BadRequest();
+                return NoContent();
             return Ok(_Mapper.Map<UserDTO>(user));
         }
          
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] UserDTO userDTO)
+        public async Task<IActionResult> Add([FromBody] UserDTO userDTO)
         {
             try
             {
@@ -77,13 +77,6 @@ namespace ServerApp.Controllers
                 return Ok();
             return BadRequest();
         }
-         
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
-        {
-            if (await _UserService.DeleteById(id))
-                return Ok();
-            return BadRequest();
-        }
+          
     }
 }
