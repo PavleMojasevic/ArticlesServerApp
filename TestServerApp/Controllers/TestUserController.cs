@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using ServerApp.Controllers;
 using ServerApp.Interfaces;
@@ -21,7 +21,7 @@ namespace TestServerApp.Controllers
         public async Task Get_ShouldReturn200Status()
         {
             var userService = new Mock<IUserService>();
-            MockUsers mockUsers = new MockUsers();
+            MockUsers mockUsers = new();
             userService.Setup(_ => _.GetAsync()).ReturnsAsync(mockUsers.GetUsers());
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
@@ -36,7 +36,7 @@ namespace TestServerApp.Controllers
         public async Task GetById_HasValue(long id, bool hasValue)
         {
             var userService = new Mock<IUserService>();
-            MockUsers mockUsers = new MockUsers();
+            MockUsers mockUsers = new();
             userService.Setup(_ => _.GetByIdAsync(id)).ReturnsAsync(mockUsers.GetUsers().FirstOrDefault(x => x.Id == id));
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
@@ -50,7 +50,7 @@ namespace TestServerApp.Controllers
         public async Task Add_ShouldReturn200Status()
         {
             var userService = new Mock<IUserService>();
-            MockUsers mockUsers = new MockUsers();
+            MockUsers mockUsers = new();
             userService.Setup(_ => _.Add(It.IsAny<User>())).ReturnsAsync(true);
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
@@ -62,8 +62,8 @@ namespace TestServerApp.Controllers
         public async Task Add_ShouldReturn400Status()
         {
             var userService = new Mock<IUserService>();
-            MockUsers mockUsers = new MockUsers();
-            Article article = new Article();
+            MockUsers mockUsers = new();
+            Article article = new();
             userService.Setup(_ => _.Add(It.IsAny<User>())).Throws(new Exception());
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
@@ -80,7 +80,7 @@ namespace TestServerApp.Controllers
         {
 
             var userService = new Mock<IUserService>();
-            MockUsers mockUsers = new MockUsers();
+            MockUsers mockUsers = new();
             userService.Setup(_ => _.UpdateAsync(id, It.IsAny<User>())).ReturnsAsync(mockUsers.GetUsers().FirstOrDefault(x => x.Id == id) != null);
 
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
