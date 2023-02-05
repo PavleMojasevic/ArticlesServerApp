@@ -20,14 +20,14 @@ namespace TestServerApp.Controllers
     {
 
         [Fact]
-        public async Task Get_ShouldReturn200Status()
+        public async Task Get_ShouldReturn200StatusAsync()
         {
             var service = new Mock<IArticleService>();
             MockArticles mockArticles = new();
-            service.Setup(_ => _.GetAsync()).ReturnsAsync(mockArticles.GetArticles());
+            service.Setup(_ => _.GetAsync(null)).ReturnsAsync(mockArticles.GetArticles());
             var sut = new ArticleController(service.Object, MockMapper.GetMapper());
 
-            var result = (OkObjectResult)await sut.GetAsync();
+            var result = (OkObjectResult)await sut.GetAsync(null);
 
             result.StatusCode.Should().Be(200);
         }
@@ -36,7 +36,7 @@ namespace TestServerApp.Controllers
         [InlineData(-4, false)]
         [InlineData(2, true)]
         [InlineData(3, false)]
-        public async Task GetById_HasValue(long id, bool hasValue)
+        public async Task GetById_HasValueAsync(long id, bool hasValue)
         {
             var articleService = new Mock<IArticleService>();
             MockArticles mockArticles = new();
@@ -50,11 +50,11 @@ namespace TestServerApp.Controllers
                 Assert.IsType<NoContentResult>(result);
         }
         [Fact]
-        public async Task Add_ShouldReturn200Status()
+        public async Task Add_ShouldReturn200StatusAsync()
         {
             var articleService = new Mock<IArticleService>();
             MockArticles mockArticles = new();
-            articleService.Setup(_ => _.Add(It.IsAny<Article>())).ReturnsAsync(true);
+            articleService.Setup(_ => _.AddAsync(It.IsAny<Article>())).ReturnsAsync(true);
             var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
 
             var result = (OkObjectResult)await sut.AddAsync(new());
@@ -62,12 +62,12 @@ namespace TestServerApp.Controllers
             result.StatusCode.Should().Be(200);
         }
         [Fact]
-        public async Task Add_ShouldReturn400Status()
+        public async Task Add_ShouldReturn400StatusAsync()
         {
             var articleService = new Mock<IArticleService>();
             MockArticles mockArticles = new();
             Article article = new();
-            articleService.Setup(_ => _.Add(It.IsAny<Article>())).Throws(new Exception());
+            articleService.Setup(_ => _.AddAsync(It.IsAny<Article>())).Throws(new Exception());
             var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
 
             var result = (BadRequestObjectResult)await sut.AddAsync(new());
@@ -79,11 +79,11 @@ namespace TestServerApp.Controllers
         [InlineData(-4, false)]
         [InlineData(2, true)]
         [InlineData(3, false)]
-        public async Task Put_Test(long id, bool hasValue)
+        public async Task Put_TestAsync(long id, bool hasValue)
         {
             var articleService = new Mock<IArticleService>();
             MockArticles mockArticles = new();
-            articleService.Setup(_ => _.UpdateAsync(id, It.IsAny<Article>())).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
+            articleService.Setup(_ => _.UpdateAsync(id, It.IsAny<EditArticeDto>())).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
             var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
 
             var result = await sut.UpdateAsync(id, new());
@@ -97,7 +97,7 @@ namespace TestServerApp.Controllers
         [InlineData(2, true)]
         [InlineData(3, false)]
         [InlineData(-4, false)]
-        public async Task AddComment_HasValue(long id, bool hasValue)
+        public async Task AddComment_HasValueAsync(long id, bool hasValue)
         {
             var articleService = new Mock<IArticleService>();
             MockArticles mockArticles = new();

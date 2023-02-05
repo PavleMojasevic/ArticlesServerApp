@@ -21,9 +21,9 @@ public class ArticleController : ControllerBase
     }
     // GET: api/<ArticleController>
     [HttpGet]
-    public async Task<IActionResult> GetAsync()
+    public async Task<IActionResult> GetAsync([FromQuery]ArticleFilterDTO? filter)
     {
-        List<Article> articles = await _ArticleService.GetAsync(); 
+        List<Article> articles = await _ArticleService.GetAsync(filter); 
         return Ok(_Mapper.Map<List<ArticleDTO>>(articles));
     }
      
@@ -42,7 +42,7 @@ public class ArticleController : ControllerBase
         try
         {
             Article article = _Mapper.Map<Article>(articleDTO);
-            return Ok(await _ArticleService.Add(article)); 
+            return Ok(await _ArticleService.AddAsync(article)); 
         }
         catch (Exception e)
         {
@@ -52,11 +52,9 @@ public class ArticleController : ControllerBase
 
     // PUT api/<ArticleController>/5
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAsync(long id, [FromBody] ArticleDTO articleDTO)
-    {
-        Article article = _Mapper.Map<Article>(articleDTO); 
-
-        if (await _ArticleService.UpdateAsync(id, article))
+    public async Task<IActionResult> UpdateAsync(long id, [FromBody] EditArticeDto editArticeDto)
+    {  
+        if (await _ArticleService.UpdateAsync(id, editArticeDto))
             return Ok();
         return BadRequest();
     }

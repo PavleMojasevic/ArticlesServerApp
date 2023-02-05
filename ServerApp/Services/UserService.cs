@@ -23,7 +23,7 @@ public class UserService:IUserService
         _TokenAddress = config.GetSection("tokenAddress");
     }
 
-    public async Task<bool> Add(User user)
+    public async Task<bool> AddAsync(User user)
     {
         _DbContext.Users.Add(user);
         return true;

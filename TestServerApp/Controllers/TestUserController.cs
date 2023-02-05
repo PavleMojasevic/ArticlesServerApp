@@ -18,7 +18,7 @@ namespace TestServerApp.Controllers
     public class TestUserController
     {
         [Fact]
-        public async Task Get_ShouldReturn200Status()
+        public async Task Get_ShouldReturn200StatusAsync()
         {
             var userService = new Mock<IUserService>();
             MockUsers mockUsers = new();
@@ -33,7 +33,7 @@ namespace TestServerApp.Controllers
         [Theory]
         [InlineData(1, true)]
         [InlineData(-4, false)] 
-        public async Task GetById_HasValue(long id, bool hasValue)
+        public async Task GetById_HasValueAsync(long id, bool hasValue)
         {
             var userService = new Mock<IUserService>();
             MockUsers mockUsers = new();
@@ -47,11 +47,11 @@ namespace TestServerApp.Controllers
                 Assert.IsType<NoContentResult>(result);
         }
         [Fact]
-        public async Task Add_ShouldReturn200Status()
+        public async Task Add_ShouldReturn200StatusAsync()
         {
             var userService = new Mock<IUserService>();
             MockUsers mockUsers = new();
-            userService.Setup(_ => _.Add(It.IsAny<User>())).ReturnsAsync(true);
+            userService.Setup(_ => _.AddAsync(It.IsAny<User>())).ReturnsAsync(true);
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
             var result = (OkObjectResult)await sut.AddAsync(new());
@@ -59,12 +59,12 @@ namespace TestServerApp.Controllers
             result.StatusCode.Should().Be(200);
         }
         [Fact]
-        public async Task Add_ShouldReturn400Status()
+        public async Task Add_ShouldReturn400StatusAsync()
         {
             var userService = new Mock<IUserService>();
             MockUsers mockUsers = new();
             Article article = new();
-            userService.Setup(_ => _.Add(It.IsAny<User>())).Throws(new Exception());
+            userService.Setup(_ => _.AddAsync(It.IsAny<User>())).Throws(new Exception());
             var sut = new UsersController(userService.Object, MockMapper.GetMapper());
 
             var result = (BadRequestObjectResult)await sut.AddAsync(new());
@@ -76,7 +76,7 @@ namespace TestServerApp.Controllers
         [InlineData(-4, false)]
         [InlineData(2, true)]
         [InlineData(3, true)]
-        public async Task Put_Test(long id, bool hasValue)
+        public async Task Put_TestAsync(long id, bool hasValue)
         {
 
             var userService = new Mock<IUserService>();

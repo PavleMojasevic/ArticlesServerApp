@@ -45,7 +45,7 @@ public class UsersController : ControllerBase
         try
         {
             User user = _Mapper.Map<User>(userDTO);
-            return Ok(await _UserService.Add(user));
+            return Ok(await _UserService.AddAsync(user));
         }
         catch (Exception e)
         {
