@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ServerApp.DTO;
 using ServerApp.Infrastucture;
 using ServerApp.Interfaces;
 using ServerApp.Models;
@@ -10,8 +11,8 @@ using System.Text;
 
 namespace ServerApp.Services;
 
-public class UserService:IUserService
-{ 
+public class UserService : IUserService
+{
     private readonly ArticlesDbContext _DbContext;
     private readonly IConfigurationSection _SecretKey;
     private readonly IConfigurationSection _TokenAddress;
@@ -53,24 +54,33 @@ public class UserService:IUserService
     public async Task<JWToken?> LoginAsync(LoginCredencials credencials)
     {
         var user = _DbContext.Users.FirstOrDefault(x => x.Username == credencials.Username && x.Password == Encode(credencials.Password));
-        if (user==null)
+        if (user == null)
             return null;
-        List<Claim> claims = new List<Claim>(); 
+        List<Claim> claims = new List<Claim>();
         claims.Add(new Claim("id", user.Id.ToString()));
-        claims.Add(new Claim("role", user.Role.ToString()));   
-        SymmetricSecurityKey secretKey = new (Encoding.UTF8.GetBytes(_SecretKey.Value));
-        SigningCredentials signinCredentials = new (secretKey, SecurityAlgorithms.HmacSha256);
-        JwtSecurityToken tokeOptions = new (
-               issuer: _TokenAddress.Value, 
-               claims: claims, 
+        claims.Add(new Claim("role", user.Role.ToString()));
+        SymmetricSecurityKey secretKey = new(Encoding.UTF8.GetBytes(_SecretKey.Value));
+        SigningCredentials signinCredentials = new(secretKey, SecurityAlgorithms.HmacSha256);
+        JwtSecurityToken tokeOptions = new(
+               issuer: _TokenAddress.Value,
+               claims: claims,
                expires: DateTime.Now.AddDays(1),
-               signingCredentials: signinCredentials 
-           ); 
-        return new () { Token = new JwtSecurityTokenHandler().WriteToken(tokeOptions) };
+               signingCredentials: signinCredentials
+           );
+        return new() { Token = new JwtSecurityTokenHandler().WriteToken(tokeOptions) };
     }
 
-    public Task<bool> UpdateAsync(long id, User user)
+    public async Task<bool> UpdateAsync(long id, EditUserDTO user)
     {
-        throw new NotImplementedException();
-    } 
+        User? userFromDb = await _DbContext.Users.FindAsync(id);
+        if (userFromDb == null)
+        {
+            return false;
+        } 
+        userFromDb.Username=user.Username;
+        userFromDb.Password = Encode(user.Password);
+        userFromDb.Email=user.Email;
+        await _DbContext.SaveChangesAsync();
+        return true;
+    }
 }

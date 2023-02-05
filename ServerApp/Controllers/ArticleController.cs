@@ -39,15 +39,9 @@ public class ArticleController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddAsync([FromBody] ArticleDTO articleDTO)
     {
-        try
-        {
-            Article article = _Mapper.Map<Article>(articleDTO);
+         Article article = _Mapper.Map<Article>(articleDTO);
             return Ok(await _ArticleService.AddAsync(article)); 
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e);
-        }
+         
     }
 
     // PUT api/<ArticleController>/5

@@ -1,11 +1,8 @@
-﻿using ServerApp.Models;
+﻿namespace ServerApp.DTO;
 
-namespace ServerApp.DTO
+public class ArticleFilterDTO
 {
-    public class ArticleFilterDTO
-    {
-        public long? CategoryId { get; set; }
-        public long? TagId { get; set; }
-        public long? AuthorId{ get; set; }
-    }
+    public long? CategoryId { get; set; }
+    public long? TagId { get; set; }
+    public long? AuthorId { get; set; }
 }

@@ -90,7 +90,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Server v1"));
 }
-
+app.UseExceptionHandler("/error");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
