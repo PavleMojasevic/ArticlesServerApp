@@ -1,10 +1,9 @@
 ﻿using ServerApp.DTO;
 using ServerApp.Models;
 
-namespace ServerApp.Interfaces
+namespace ServerApp.Interfaces;
+
+public interface IArticleService : IService<Article>
 {
-    public interface IArticleService : IService<Article>
-    {
-        Task<bool> AddCommentAsync(Comment comment);
-    }
+    Task<bool> AddCommentAsync(Comment comment);
 }

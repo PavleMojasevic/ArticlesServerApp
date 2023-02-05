@@ -1,9 +1,8 @@
 ﻿using ServerApp.Models;
 
-namespace ServerApp.Interfaces
+namespace ServerApp.Interfaces;
+
+public interface IUserService : IService<User>
 {
-    public interface IUserService : IService<User>
-    {
-        Task<JWToken?> LoginAsync(LoginCredencials credencials);
-    }
+    Task<JWToken?> LoginAsync(LoginCredencials credencials);
 }
