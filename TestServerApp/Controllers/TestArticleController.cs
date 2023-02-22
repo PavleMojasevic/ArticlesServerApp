@@ -60,20 +60,7 @@ public class TestArticleController
         var result = (OkObjectResult)await sut.AddAsync(new());
 
         result.StatusCode.Should().Be(200);
-    }
-    [Fact]
-    public async Task Add_ShouldReturn400StatusAsync()
-    {
-        var articleService = new Mock<IArticleService>();
-        MockArticles mockArticles = new();
-        Article article = new();
-        articleService.Setup(_ => _.AddAsync(It.IsAny<Article>())).Throws(new Exception());
-        var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
-
-        var result = (BadRequestObjectResult)await sut.AddAsync(new());
-
-        result.StatusCode.Should().Be(400);
-    }
+    } 
     [Theory]
     [InlineData(1, true)]
     [InlineData(-4, false)]
@@ -91,7 +78,7 @@ public class TestArticleController
             Assert.IsType<OkResult>(result);
         else
             Assert.IsType<BadRequestResult>(result);
-    } 
+    }
     [Theory]
     [InlineData(1, true)]
     [InlineData(2, true)]

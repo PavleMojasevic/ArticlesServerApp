@@ -13,7 +13,7 @@ public class Comment
         Date = DateTime.Now;
     }
     public long Id { get; set; }
-    public string Text { get; set; }
+    public string Text { get; set; } = "";
     public int Likes { get; set; } = 0;
     public int Dislikes { get; set; } = 0;
     public List<Comment> Replies { get; set; } = new List<Comment>();

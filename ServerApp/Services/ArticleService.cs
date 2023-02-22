@@ -20,7 +20,7 @@ public class ArticleService : IArticleService
     {
         if (article.Image?.Length == 0) return false;
         if (string.IsNullOrWhiteSpace(article.Title)) return false;
-        if (article.Category == null) return false;
+        if (article.CategoryId == 0) return false;
 
 
         if (_DbContext.Articles.Any(x => x.Title == article.Title)) return false;
@@ -43,7 +43,7 @@ public class ArticleService : IArticleService
     public async Task<List<Article>> GetAsync(ArticleFilterDTO? filter = null)
     {
 
-        IQueryable<Article> articles = _DbContext.Articles.Include(x => x.Tags);
+        IQueryable<Article> articles = _DbContext.Articles;
         if (filter != null)
         { 
             if (filter.AuthorId != null)
@@ -64,20 +64,20 @@ public class ArticleService : IArticleService
 
     public async Task<Article?> GetByIdAsync(long id)
     {
-        Article? article = await _DbContext.Articles.FindAsync(id);
+        Article? article = await _DbContext.Articles.FirstOrDefaultAsync(x=>x.Id==id);
         return article;
     }
 
     public async Task<bool> UpdateAsync(long id, EditArticeDto article)
     {
-        Article? articleFromDb = await _DbContext.Articles.FindAsync(id);
+        Article? articleFromDb = await _DbContext.Articles.FirstOrDefaultAsync(x => x.Id == id);
         if (articleFromDb == null)
         {
             return false;
         }
         if (article.CategoryId != null)
         {
-            articleFromDb.CategoryId = article.CategoryId;
+            articleFromDb.CategoryId = (long)article.CategoryId;
         }
         if (article.Content != null)
         {

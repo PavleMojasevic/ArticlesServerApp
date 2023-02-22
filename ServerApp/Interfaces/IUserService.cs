@@ -7,7 +7,7 @@ public interface IUserService
 {
     Task<JWToken?> LoginAsync(LoginCredencials credencials);
 
-    Task<List<User?>> GetAsync();
+    Task<List<User>?> GetAsync();
     Task<User?> GetByIdAsync(long id);
     Task<bool> AddAsync(User entity);
     Task<bool> UpdateAsync(long id, EditUserDTO entity);

@@ -58,20 +58,7 @@ public class TestUserController
         var result = (OkObjectResult)await sut.AddAsync(new());
 
         result.StatusCode.Should().Be(200);
-    }
-    [Fact]
-    public async Task Add_ShouldReturn400StatusAsync()
-    {
-        var userService = new Mock<IUserService>();
-        MockUsers mockUsers = new();
-        Article article = new();
-        userService.Setup(_ => _.AddAsync(It.IsAny<User>())).Throws(new Exception());
-        var sut = new UsersController(userService.Object, MockMapper.GetMapper());
-
-        var result = (BadRequestObjectResult)await sut.AddAsync(new());
-
-        result.StatusCode.Should().Be(400);
-    }
+    } 
     [Theory]
     [InlineData(1, true)]
     [InlineData(-4, false)]

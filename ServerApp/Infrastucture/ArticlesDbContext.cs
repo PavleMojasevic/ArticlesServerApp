@@ -6,13 +6,17 @@ namespace ServerApp.Infrastucture;
 public class ArticlesDbContext:DbContext
 {
 
-    public DbSet<Article> Articles { get; set; }
+    public virtual DbSet<Article> Articles { get; set; }
     public DbSet<Comment> Comments { get; set; } 
     public DbSet<Tag> Tags { get; set; }
     public DbSet<User> Users{ get; set; }
 
     public ArticlesDbContext(DbContextOptions options) : base(options)
     {
+    }
+
+    public ArticlesDbContext()
+    { 
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

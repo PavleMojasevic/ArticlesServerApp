@@ -25,7 +25,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
-        List<User> articles = await _UserService.GetAsync();
+        List<User>? articles = await _UserService.GetAsync();
         return Ok(_Mapper.Map<List<UserDTO>>(articles));
     }
 

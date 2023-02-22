@@ -26,14 +26,14 @@ public class UserService : IUserService
 
     public async Task<bool> AddAsync(User user)
     {
-        _DbContext.Users.Add(user);
+        await _DbContext.Users.AddAsync(user);
         return true;
     }
 
 
-    public async Task<List<User>> GetAsync()
+    public async Task<List<User>?> GetAsync()
     {
-        return _DbContext.Users.ToList();
+        return await _DbContext.Users.ToListAsync();
     }
 
     public async Task<User?> GetByIdAsync(long id)
@@ -53,7 +53,9 @@ public class UserService : IUserService
     }
     public async Task<JWToken?> LoginAsync(LoginCredencials credencials)
     {
-        var user = _DbContext.Users.FirstOrDefault(x => x.Username == credencials.Username && x.Password == Encode(credencials.Password));
+        User? user =await _DbContext.Users.FirstOrDefaultAsync(x => 
+            x.Username == credencials.Username && 
+            x.Password == Encode(credencials.Password));
         if (user == null)
             return null;
         List<Claim> claims = new List<Claim>();

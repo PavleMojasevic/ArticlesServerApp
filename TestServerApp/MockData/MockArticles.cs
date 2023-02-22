@@ -62,8 +62,7 @@ public class MockArticles
             new ()
             {
                 Author=users[0],
-                AuthorId=users[0].Id,
-                Category=null,
+                AuthorId=users[0].Id, 
                 CategoryId=0,
                 Comments=new List<Comment>(),
                 Date=DateTime.Today,
@@ -78,8 +77,7 @@ public class MockArticles
                 AuthorId=users[0].Id,
                 Category=new Category{Id=1, Name="c2"},
                 CategoryId=2,
-                Comments=new List<Comment>(),
-                Date=DateTime.Now.AddDays(-1),
+                Comments=new List<Comment>(), 
                 Image=null,
                 Id=2,
                 Tags=new List<Tag>{ new Tag { Name = "tag3" },new Tag{ Name = "tag2" } },
