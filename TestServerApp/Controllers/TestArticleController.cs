@@ -6,6 +6,7 @@ using ServerApp.Controllers;
 using ServerApp.DTO;
 using ServerApp.Interfaces;
 using ServerApp.Models;
+using ServerApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,13 +20,23 @@ namespace TestServerApp.Controllers;
 public class TestArticleController
 {
 
+    Mock<IArticleService> _ArticleService;
+    Mock<ICommentService> _CommentService ;
+    MockArticles _MockArticles ;
+
+    public TestArticleController()
+    {
+        _ArticleService = new Mock<IArticleService>();
+        _CommentService = new Mock<ICommentService>();
+        _MockArticles = new();
+    }
+
     [Fact]
     public async Task Get_ShouldReturn200StatusAsync()
     {
-        var service = new Mock<IArticleService>();
         MockArticles mockArticles = new();
-        service.Setup(_ => _.GetAsync(null)).ReturnsAsync(mockArticles.GetArticles());
-        var sut = new ArticleController(service.Object, MockMapper.GetMapper());
+        _ArticleService.Setup(_ => _.GetAsync(null)).ReturnsAsync(mockArticles.GetArticles());
+        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
 
         var result = (OkObjectResult)await sut.GetAsync(null);
 
@@ -37,11 +48,9 @@ public class TestArticleController
     [InlineData(2, true)]
     [InlineData(3, false)]
     public async Task GetById_HasValueAsync(long id, bool hasValue)
-    {
-        var articleService = new Mock<IArticleService>();
-        MockArticles mockArticles = new();
-        articleService.Setup(_ => _.GetByIdAsync(id)).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id));
-        var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
+    { 
+        _ArticleService.Setup(_ => _.GetByIdAsync(id)).ReturnsAsync(_MockArticles.GetArticles().FirstOrDefault(x => x.Id == id));
+        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
 
         var result = await sut.GetByIdAsync(id);
         if (hasValue)
@@ -51,11 +60,9 @@ public class TestArticleController
     }
     [Fact]
     public async Task Add_ShouldReturn200StatusAsync()
-    {
-        var articleService = new Mock<IArticleService>();
-        MockArticles mockArticles = new();
-        articleService.Setup(_ => _.AddAsync(It.IsAny<Article>())).ReturnsAsync(true);
-        var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
+    {  
+        _ArticleService.Setup(_ => _.AddAsync(It.IsAny<Article>()));
+        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
 
         var result = (OkObjectResult)await sut.AddAsync(new());
 
@@ -67,11 +74,10 @@ public class TestArticleController
     [InlineData(2, true)]
     [InlineData(3, false)]
     public async Task Put_TestAsync(long id, bool hasValue)
-    {
-        var articleService = new Mock<IArticleService>();
-        MockArticles mockArticles = new();
-        articleService.Setup(_ => _.UpdateAsync(id, It.IsAny<EditArticeDto>())).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
-        var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
+    {  
+        _ArticleService.Setup(_ => _.UpdateAsync(id, It.IsAny<EditArticeDto>()))
+            .ReturnsAsync(_MockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
+        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
 
         var result = await sut.UpdateAsync(id, new());
         if (hasValue)
@@ -85,11 +91,9 @@ public class TestArticleController
     [InlineData(3, false)]
     [InlineData(-4, false)]
     public async Task AddComment_HasValueAsync(long id, bool hasValue)
-    {
-        var articleService = new Mock<IArticleService>();
-        MockArticles mockArticles = new();
-        articleService.Setup(_ => _.AddCommentAsync(It.IsAny<Comment>())).ReturnsAsync(mockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
-        var sut = new ArticleController(articleService.Object, MockMapper.GetMapper());
+    {  
+        _ArticleService.Setup(_ => _.AddCommentAsync(It.IsAny<Comment>())).ReturnsAsync(_MockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
+        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
 
         var result = await sut.AddCommentAsync(new());
         if (hasValue)

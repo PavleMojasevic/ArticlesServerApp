@@ -16,26 +16,26 @@ public class ArticleService : IArticleService
         _DbContext = dbContext;
     }
 
-    public async Task<bool> AddAsync(Article article)
-    {
-        if (article.Image?.Length == 0) return false;
-        if (string.IsNullOrWhiteSpace(article.Title)) return false;
-        if (article.CategoryId == 0) return false;
+    public async Task AddAsync(Article article)
+    { 
+        if (string.IsNullOrWhiteSpace(article.Title)) throw new ArgumentException("Title is not valid");
+        if (article.CategoryId == 0) throw new ArgumentException("Category id is not valid");
 
 
-        if (_DbContext.Articles.Any(x => x.Title == article.Title)) return false;
+        if (_DbContext.Articles.Any(x => x.Title == article.Title)) throw new ArgumentException("Article with this title already exists");
 
-        article.CategoryId = article.Category.Id;
         article.Comments = new List<Comment>();
         article.Date = DateTime.Now;
-
+        var tags = article.Tags; 
         await _DbContext.Articles.AddAsync(article);
-        return true;
-    }
 
+        await _DbContext.SaveChangesAsync(); 
+         
+    } 
     public async Task<bool> AddCommentAsync(Comment comment)
     {
         await _DbContext.Comments.AddAsync(comment);
+        await _DbContext.SaveChangesAsync();
         return true;
     }
 
@@ -43,28 +43,31 @@ public class ArticleService : IArticleService
     public async Task<List<Article>> GetAsync(ArticleFilterDTO? filter = null)
     {
 
-        IQueryable<Article> articles = _DbContext.Articles;
+        IQueryable<Article> articles = _DbContext.Articles.Include(x=>x.Tags);
         if (filter != null)
         { 
             if (filter.AuthorId != null)
             {
                 articles = articles.Where(x => x.AuthorId == filter.AuthorId);
             }
-            if (filter.TagId != null)
+            if (filter.Tag != null)
             {
-                articles = articles.Where(x => x.Tags.Any(y => y.Id == filter.TagId));
+                articles = articles.Where(x => x.Tags.Any(y => y.TagName == filter.Tag));
             } 
             if (filter.CategoryId != null)
             {
                 articles = articles.Where(x => x.CategoryId == filter.CategoryId);
             } 
         }
+        var result = await articles.ToListAsync(); 
+
+        
         return await articles.ToListAsync();
     }
 
     public async Task<Article?> GetByIdAsync(long id)
     {
-        Article? article = await _DbContext.Articles.FirstOrDefaultAsync(x=>x.Id==id);
+        Article? article = await _DbContext.Articles.Include(x => x.Tags).FirstOrDefaultAsync(x=>x.Id==id); 
         return article;
     }
 

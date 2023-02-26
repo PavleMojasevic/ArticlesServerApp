@@ -26,7 +26,9 @@ public class UserService : IUserService
 
     public async Task<bool> AddAsync(User user)
     {
+        user.Password = Encode(user.Password);
         await _DbContext.Users.AddAsync(user);
+        await _DbContext.SaveChangesAsync();
         return true;
     }
 

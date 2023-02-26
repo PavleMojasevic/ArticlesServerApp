@@ -8,6 +8,8 @@ public class CommentDTO
     public string Text { get; set; } = "";
     public int Likes { get; set; }
     public int Dislikes { get; set; }
+    public bool Liked { get; set; }
+    public bool Disliked { get; set; }
     public List<CommentDTO> Replies { get;set; }=new List<CommentDTO>();
     public DateTime Date { get; set; }
 

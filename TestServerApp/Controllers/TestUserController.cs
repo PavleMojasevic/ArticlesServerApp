@@ -24,7 +24,7 @@ public class TestUserController
         var userService = new Mock<IUserService>();
         MockUsers mockUsers = new();
         userService.Setup(_ => _.GetAsync()).ReturnsAsync(mockUsers.GetUsers());
-        var sut = new UsersController(userService.Object, MockMapper.GetMapper());
+        var sut = new UserController(userService.Object, MockMapper.GetMapper());
 
         var result = (OkObjectResult)await sut.GetAsync();
 
@@ -39,7 +39,7 @@ public class TestUserController
         var userService = new Mock<IUserService>();
         MockUsers mockUsers = new();
         userService.Setup(_ => _.GetByIdAsync(id)).ReturnsAsync(mockUsers.GetUsers().FirstOrDefault(x => x.Id == id));
-        var sut = new UsersController(userService.Object, MockMapper.GetMapper());
+        var sut = new UserController(userService.Object, MockMapper.GetMapper());
 
         var result = await sut.GetByIdAsync(id);
         if (hasValue)
@@ -53,7 +53,7 @@ public class TestUserController
         var userService = new Mock<IUserService>();
         MockUsers mockUsers = new();
         userService.Setup(_ => _.AddAsync(It.IsAny<User>())).ReturnsAsync(true);
-        var sut = new UsersController(userService.Object, MockMapper.GetMapper());
+        var sut = new UserController(userService.Object, MockMapper.GetMapper());
 
         var result = (OkObjectResult)await sut.AddAsync(new());
 
@@ -71,7 +71,7 @@ public class TestUserController
         MockUsers mockUsers = new();
         userService.Setup(_ => _.UpdateAsync(id, It.IsAny<EditUserDTO>())).ReturnsAsync(mockUsers.GetUsers().FirstOrDefault(x => x.Id == id) != null);
 
-        var sut = new UsersController(userService.Object, MockMapper.GetMapper());
+        var sut = new UserController(userService.Object, MockMapper.GetMapper());
 
         var result = await sut.UpdateAsync(id, new());
         if (hasValue)

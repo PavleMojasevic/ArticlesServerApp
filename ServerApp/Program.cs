@@ -50,6 +50,9 @@ builder.Services.AddSwaggerGen(c =>
 
 
 builder.Services.AddScoped<IArticleService, ArticleService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddDbContext<ArticlesDbContext>(options => 
     options.UseSqlite(builder.Configuration.GetConnectionString("DatabaseURL")));
 

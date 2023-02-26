@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ServerApp.Infrastucture;
 
@@ -10,12 +11,28 @@ using ServerApp.Infrastucture;
 namespace ServerApp.Migrations
 {
     [DbContext(typeof(ArticlesDbContext))]
-    partial class ArticlesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230226123421_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.13");
+
+            modelBuilder.Entity("ArticleTag", b =>
+                {
+                    b.Property<long>("ArticlesId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TagsName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ArticlesId", "TagsName");
+
+                    b.HasIndex("TagsName");
+
+                    b.ToTable("ArticleTag");
+                });
 
             modelBuilder.Entity("CommentUser", b =>
                 {
@@ -29,7 +46,7 @@ namespace ServerApp.Migrations
 
                     b.HasIndex("LikedId1");
 
-                    b.ToTable("CommentUser", (string)null);
+                    b.ToTable("CommentUser");
                 });
 
             modelBuilder.Entity("CommentUser1", b =>
@@ -44,7 +61,7 @@ namespace ServerApp.Migrations
 
                     b.HasIndex("DislikedId1");
 
-                    b.ToTable("CommentUser1", (string)null);
+                    b.ToTable("CommentUser1");
                 });
 
             modelBuilder.Entity("ServerApp.Models.Article", b =>
@@ -79,22 +96,7 @@ namespace ServerApp.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Articles", (string)null);
-                });
-
-            modelBuilder.Entity("ServerApp.Models.ArticleTag", b =>
-                {
-                    b.Property<long>("ArticleId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("TagName")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("ArticleId", "TagName");
-
-                    b.HasIndex("TagName");
-
-                    b.ToTable("ArticleTags", (string)null);
+                    b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("ServerApp.Models.Category", b =>
@@ -114,7 +116,7 @@ namespace ServerApp.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("ServerApp.Models.Comment", b =>
@@ -156,7 +158,7 @@ namespace ServerApp.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("ServerApp.Models.Tag", b =>
@@ -166,7 +168,7 @@ namespace ServerApp.Migrations
 
                     b.HasKey("Name");
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("ServerApp.Models.User", b =>
@@ -203,7 +205,22 @@ namespace ServerApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ArticleTag", b =>
+                {
+                    b.HasOne("ServerApp.Models.Article", null)
+                        .WithMany()
+                        .HasForeignKey("ArticlesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ServerApp.Models.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsName")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CommentUser", b =>
@@ -255,25 +272,6 @@ namespace ServerApp.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("ServerApp.Models.ArticleTag", b =>
-                {
-                    b.HasOne("ServerApp.Models.Article", "Article")
-                        .WithMany("Tags")
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ServerApp.Models.Tag", "Tag")
-                        .WithMany("Articles")
-                        .HasForeignKey("TagName")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Article");
-
-                    b.Navigation("Tag");
-                });
-
             modelBuilder.Entity("ServerApp.Models.Category", b =>
                 {
                     b.HasOne("ServerApp.Models.Category", "Parent")
@@ -313,8 +311,6 @@ namespace ServerApp.Migrations
             modelBuilder.Entity("ServerApp.Models.Article", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("ServerApp.Models.Category", b =>
@@ -327,11 +323,6 @@ namespace ServerApp.Migrations
             modelBuilder.Entity("ServerApp.Models.Comment", b =>
                 {
                     b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("ServerApp.Models.Tag", b =>
-                {
-                    b.Navigation("Articles");
                 });
 
             modelBuilder.Entity("ServerApp.Models.User", b =>

@@ -3,6 +3,6 @@
 public class ArticleFilterDTO
 {
     public long? CategoryId { get; set; }
-    public long? TagId { get; set; }
+    public string? Tag { get; set; }
     public long? AuthorId { get; set; }
 }

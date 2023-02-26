@@ -12,12 +12,12 @@ namespace ServerApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
     // GET: api/<UsersController>
     IUserService _UserService;
     IMapper _Mapper;
-    public UsersController(IUserService userService, IMapper mapper)
+    public UserController(IUserService userService, IMapper mapper)
     {
         _Mapper = mapper;
         _UserService = userService;
@@ -40,11 +40,13 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody] UserDTO userDTO)
+    public async Task<IActionResult> AddAsync([FromBody] UserAddDTO userDTO)
     {
 
         User user = _Mapper.Map<User>(userDTO);
-        return Ok(await _UserService.AddAsync(user));
+        if (await _UserService.AddAsync(user))
+            return Ok();
+        return BadRequest();
 
     }
     [HttpPost("Login")]
@@ -59,7 +61,7 @@ public class UsersController : ControllerBase
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAsync(long id, [FromBody] EditUserDTO userDTO)
-    { 
+    {
 
         if (await _UserService.UpdateAsync(id, userDTO))
             return Ok();

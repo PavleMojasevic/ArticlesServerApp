@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ServerApp.Controllers;
@@ -10,7 +11,8 @@ public class ErrorController : ControllerBase
     [Route("/error")]
     public IActionResult HandleError()
     {
-        //TODO: exceptions
-        return BadRequest();
+        var exeptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
+        var exception = exeptionHandlerFeature?.Error;
+        return BadRequest(exception.Message);
     }
 }

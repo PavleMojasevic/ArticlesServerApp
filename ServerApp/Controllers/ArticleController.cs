@@ -13,12 +13,16 @@ namespace ServerApp.Controllers;
 public class ArticleController : ControllerBase
 {
     IArticleService _ArticleService;
+    ICommentService _CommentService;
     IMapper _Mapper;
-    public ArticleController(IArticleService articleservice, IMapper mapper)
+
+    public ArticleController(IArticleService articleService, ICommentService commentService, IMapper mapper)
     {
+        _ArticleService = articleService;
+        _CommentService = commentService;
         _Mapper = mapper;
-        _ArticleService = articleservice;
     }
+
     // GET: api/<ArticleController>
     [HttpGet]
     public async Task<IActionResult> GetAsync([FromQuery] ArticleFilterDTO? filter)
@@ -27,20 +31,33 @@ public class ArticleController : ControllerBase
         return Ok(_Mapper.Map<List<ArticleDTO>>(articles));
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync(long id)
+    [HttpGet("{articleId}")]
+    public async Task<IActionResult> GetByIdAsync(long articleId)
     {
-        Article? article = await _ArticleService.GetByIdAsync(id);
+        Article? article = await _ArticleService.GetByIdAsync(articleId);
         if (article == null)
             return NoContent();
-        return Ok(_Mapper.Map<ArticleDTO>(article));
+        var result = _Mapper.Map<ArticleDTO>(article);
+
+        long? userId = GetUserId();
+        result.Comments = _Mapper.Map<List<CommentDTO>>(await _CommentService.GetByArticleAsync(userId, articleId));
+        return Ok(result);
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody] ArticleDTO articleDTO)
-    {
+    public async Task<IActionResult> AddAsync([FromBody] ArticleAddDTO articleDTO)
+    { 
         Article article = _Mapper.Map<Article>(articleDTO);
-        return Ok(await _ArticleService.AddAsync(article));
+        article.AuthorId = GetUserId();
+        try
+        {
+            await _ArticleService.AddAsync(article);
+            return Ok();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
 
     }
 
@@ -63,6 +80,12 @@ public class ArticleController : ControllerBase
         if (await _ArticleService.AddCommentAsync(comment))
             return Ok();
         return BadRequest();
+    }
+    private long GetUserId()
+    {
+        string? userIdStr = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+
+        return Convert.ToInt64(userIdStr);
     }
 
 }

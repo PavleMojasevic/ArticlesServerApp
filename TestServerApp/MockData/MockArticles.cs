@@ -32,7 +32,7 @@ public class MockArticles
                 Date=DateTime.Today,
                 Image=null,
                 Id=1,
-                Tags=new List<Tag>{ new Tag { Name = "tag1" },new Tag{ Name = "tag2" } },
+                Tags=new (){ new() { TagName = "tag1", ArticleId=1 },new (){ TagName = "tag2", ArticleId = 1 } },
                 Title="title1"
             },
             new ()
@@ -45,7 +45,7 @@ public class MockArticles
                 Date=DateTime.Now.AddDays(-1),
                 Image=null,
                 Id=2,
-                Tags=new List<Tag>{ new Tag { Name = "tag3" },new Tag{ Name = "tag2" } },
+                Tags=new (){ new() { TagName = "tag3", ArticleId = 2},new() { TagName = "tag2", ArticleId = 2} },
                 Title="title2"
             },
 
@@ -68,7 +68,7 @@ public class MockArticles
                 Date=DateTime.Today,
                 Image=null,
                 Id=1,
-                Tags=new List<Tag>{ new Tag { Name = "tag1" },new Tag{ Name = "tag2" } },
+                Tags=new (){ new () { TagName = "tag1", ArticleId=1 },new (){ TagName = "tag2" , ArticleId=1} },
                 Title="title1"
             },
             new ()
@@ -80,7 +80,7 @@ public class MockArticles
                 Comments=new List<Comment>(), 
                 Image=null,
                 Id=2,
-                Tags=new List<Tag>{ new Tag { Name = "tag3" },new Tag{ Name = "tag2" } },
+                Tags=new (){ new (){ TagName = "tag3" },new (){ TagName = "tag2" } },
                 Title=""
             },
 

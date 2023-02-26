@@ -1,4 +1,10 @@
 ﻿namespace ServerApp.Models;
+public enum CommentStatus
+{
+    Undefined,
+    Approved,
+    Rejected
+}
 
 public class Comment
 {
@@ -11,6 +17,7 @@ public class Comment
         Text = text;
         ArticleId = articleId; 
         Date = DateTime.Now;
+        Status = CommentStatus.Undefined;
     }
     public long Id { get; set; }
     public string Text { get; set; } = "";
@@ -25,4 +32,9 @@ public class Comment
 
     public long AuthorId { get; set; }
     public User? Author { get; set; }
+    public List<User> Liked{ get; set; }=new List<User>();
+    public List<User>Disliked{ get; set; } = new List<User>();
+
+    public CommentStatus Status { get; set; }
+     
 }

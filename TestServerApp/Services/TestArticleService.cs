@@ -67,7 +67,7 @@ public class TestArticleService
         {
             CategoryId= 1,
             AuthorId= 1,
-            TagId= 1
+            Tag= null
         };
         
         var employee = await articleService.GetAsync();
