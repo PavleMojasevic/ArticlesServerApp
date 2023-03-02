@@ -32,9 +32,8 @@ namespace ServerApp.Controllers
             {
                 return Unauthorized();
             }
-            long userId = Convert.ToInt64(userIdStr);
-            List<CommentDTO> comments = _Mapper.Map<List<CommentDTO>>(await _CommentService.GetAsync(userId));
-            return Ok(comments);
+            long userId = Convert.ToInt64(userIdStr); 
+            return Ok(await _CommentService.GetAsync(userId));
         }
         [HttpPost]
         [Authorize]
