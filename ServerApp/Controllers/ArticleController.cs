@@ -39,8 +39,7 @@ public class ArticleController : ControllerBase
             return NoContent();
         var result = _Mapper.Map<ArticleDTO>(article);
 
-        long? userId = GetUserId();
-        result.Comments = _Mapper.Map<List<CommentDTO>>(await _CommentService.GetByArticleAsync(userId, articleId));
+        result.Comments = _Mapper.Map<List<CommentDTO>>(await _CommentService.GetByArticleAsync(articleId));
         return Ok(result);
     }
 
@@ -62,25 +61,13 @@ public class ArticleController : ControllerBase
     }
 
     // PUT api/<ArticleController>/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAsync(long id, [FromBody] EditArticeDto editArticeDto)
+    [HttpPut("{articleId}")]
+    public async Task<IActionResult> UpdateAsync(long articleId, [FromBody] EditArticeDto editArticeDto)
     {
-        if (await _ArticleService.UpdateAsync(id, editArticeDto))
+        if (await _ArticleService.UpdateAsync(articleId, editArticeDto))
             return Ok();
         return BadRequest();
-    }
-
-    [HttpPost("Comment")]
-    [Authorize]
-    public async Task<IActionResult> AddCommentAsync(CommentAddDTO commentDTO)
-    {
-        Comment comment = _Mapper.Map<Comment>(commentDTO);
-        //TODO
-
-        if (await _ArticleService.AddCommentAsync(comment))
-            return Ok();
-        return BadRequest();
-    }
+    } 
     private long GetUserId()
     {
         string? userIdStr = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;

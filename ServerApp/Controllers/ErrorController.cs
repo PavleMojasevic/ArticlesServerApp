@@ -13,6 +13,6 @@ public class ErrorController : ControllerBase
     {
         var exeptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
         var exception = exeptionHandlerFeature?.Error;
-        return BadRequest(exception.Message);
+        throw new Exception("",exception); 
     }
 }

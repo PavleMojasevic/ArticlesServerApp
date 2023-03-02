@@ -13,7 +13,7 @@ using ServerApp.Interfaces;
 namespace TestServerApp.Services;
 
 
-public class TestArticleService
+public class TestUserService
 { 
     [Theory]
     [InlineData(-1, false)]
@@ -46,8 +46,7 @@ public class TestArticleService
                      .Returns(mock.Object);
 
         ArticleService articleService = new(mockDbContext.Object);
-
-        await articleService.AddAsync(article);
+        await articleService.AddAsync(article); 
     }
 
     [Fact]
@@ -67,7 +66,7 @@ public class TestArticleService
         {
             CategoryId= 1,
             AuthorId= 1,
-            Tag= null
+            Tag = null
         };
         
         var employee = await articleService.GetAsync();

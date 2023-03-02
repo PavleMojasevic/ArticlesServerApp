@@ -1,4 +1,5 @@
-﻿using ServerApp.Models;
+﻿using ServerApp.DTO;
+using ServerApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,20 +50,20 @@ public class MockArticles
                 Title="title2"
             },
 
-        }; 
-        
+        };
+
         return articles;
     }
     public List<Article> GetInvalidArticles()
     {
         List<User> users = _MockUsers.GetUsersWithoutArticles();
 
-        List<Article> articles = new ()
+        List<Article> articles = new()
         {
             new ()
             {
                 Author=users[0],
-                AuthorId=users[0].Id, 
+                AuthorId=users[0].Id,
                 CategoryId=0,
                 Comments=new List<Comment>(),
                 Date=DateTime.Today,
@@ -77,15 +78,57 @@ public class MockArticles
                 AuthorId=users[0].Id,
                 Category=new Category{Id=1, Name="c2"},
                 CategoryId=2,
-                Comments=new List<Comment>(), 
+                Comments=new List<Comment>(),
                 Image=null,
                 Id=2,
                 Tags=new (){ new (){ TagName = "tag3" },new (){ TagName = "tag2" } },
                 Title=""
             },
 
-        }; 
-        
+        };
+
+        return articles;
+    }
+    public List<EditArticeDto> GetEditArticeDto()
+    {
+        List<EditArticeDto> articles = new()
+        {
+            new()
+            {
+                Content=null,
+                CategoryId=1,
+                Image=new byte[20],
+                Title="title"
+            },
+            new()
+            {
+                Content="content",
+                CategoryId=null,
+                Image=new byte[20],
+                Title="title"
+            },
+            new()
+            {
+                Content="content",
+                CategoryId=1,
+                Image=new byte[20],
+                Title="title"
+            },
+            new()
+            {
+                Content="content",
+                CategoryId=1,
+                Image=null,
+                Title="title"
+            },
+            new()
+            {
+                Content="content",
+                CategoryId=1,
+                Image=new byte[20],
+                Title=null
+            }
+        };
         return articles;
     }
 }

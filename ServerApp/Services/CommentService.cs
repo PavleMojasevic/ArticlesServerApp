@@ -65,9 +65,9 @@ namespace ServerApp.Services
             throw new NotImplementedException();
         }
 
-        public Task<List<Comment>> GetByArticleAsync(long? userId, long articleId)
+        public async Task<List<Comment>> GetByArticleAsync(long articleId)
         {
-            throw new NotImplementedException();
+            return await _DbContext.Comments.Where(x=>x.ArticleId==articleId).ToListAsync();
         }
 
         public async Task<bool> RejectAsync(int commentId)
