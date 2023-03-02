@@ -42,13 +42,14 @@ namespace ServerApp.Controllers
         {
 
             Comment comment = new(commentDTO.Text, commentDTO.ArticleId);
+            comment.AuthorId = GetUserId()??0;
             if (await _CommentService.AddAsync(comment))
                 return Ok();
             return BadRequest();
         }
 
         [HttpPut("Like/{commentId}")]
-        public async Task<IActionResult> AddLikeAsync(int commentId)
+        public async Task<IActionResult> AddLikeAsync(long commentId)
         {
             long? userId = GetUserId();
             if (userId != null)
@@ -63,7 +64,7 @@ namespace ServerApp.Controllers
             }
         }
         [HttpDelete("Like/{commentId}")]
-        public async Task<IActionResult> RemoveLikeAsync(int commentId)
+        public async Task<IActionResult> RemoveLikeAsync(long commentId)
         {
             long? userId = GetUserId();
             if (userId != null)
@@ -78,7 +79,7 @@ namespace ServerApp.Controllers
             }
         }
         [HttpPut("Dislike/{commentId}")]
-        public async Task<IActionResult> AddDislikeAsync(int commentId)
+        public async Task<IActionResult> AddDislikeAsync(long commentId)
         {
             long? userId = GetUserId();
             if (userId != null)
@@ -93,7 +94,7 @@ namespace ServerApp.Controllers
             }
         }
         [HttpDelete("Dislike/{commentId}")]
-        public async Task<IActionResult> RemoveDislikeAsync(int commentId)
+        public async Task<IActionResult> RemoveDislikeAsync(long commentId)
         {
             long? userId = GetUserId() ;
             if (userId != null)
@@ -108,14 +109,14 @@ namespace ServerApp.Controllers
             } 
         }
         [HttpPost("Approve/{commentId}")]
-        public async Task<IActionResult> ApproveAsync(int commentId)
+        public async Task<IActionResult> ApproveAsync(long commentId)
         {
             if (await _CommentService.ApproveAsync(commentId))
                 return Ok();
             return BadRequest();
         }
         [HttpPost("Reject/{commentId}")]
-        public async Task<IActionResult> RejectAsync(int commentId)
+        public async Task<IActionResult> RejectAsync(long commentId)
         {
             if (await _CommentService.RejectAsync(commentId))
                 return Ok();
@@ -124,7 +125,7 @@ namespace ServerApp.Controllers
         private long? GetUserId()
         {
             string? userIdStr = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
-            if (userIdStr == null)
+            if (userIdStr != null)
             {
                 return Convert.ToInt64(userIdStr); 
             }
