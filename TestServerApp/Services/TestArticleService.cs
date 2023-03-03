@@ -47,7 +47,17 @@ public class TestArticleService
 
         ArticleService articleService = new(mockDbContext.Object);
 
-        await articleService.AddAsync(article);
+        try
+        {
+            await articleService.AddAsync(article);
+            Assert.True(expected);
+
+        }
+        catch (ArgumentException)
+        {
+            Assert.False(expected);
+        }
+         
     }
 
     [Fact]

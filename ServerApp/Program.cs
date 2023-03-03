@@ -53,6 +53,7 @@ builder.Services.AddScoped<IArticleService, ArticleService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IClaimService, ClaimService>();
 builder.Services.AddDbContext<ArticlesDbContext>(options => 
     options.UseSqlite(builder.Configuration.GetConnectionString("DatabaseURL")));
 

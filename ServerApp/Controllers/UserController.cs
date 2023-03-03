@@ -17,11 +17,13 @@ public class UserController : ControllerBase
     // GET: api/<UsersController>
     IUserService _UserService;
     IMapper _Mapper;
+
     public UserController(IUserService userService, IMapper mapper)
     {
-        _Mapper = mapper;
         _UserService = userService;
+        _Mapper = mapper; 
     }
+
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {

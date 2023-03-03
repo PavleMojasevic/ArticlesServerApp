@@ -62,7 +62,7 @@ public class ArticleService : IArticleService
         var result = await articles.ToListAsync(); 
 
         
-        return await articles.ToListAsync();
+        return result;
     }
 
     public async Task<Article?> GetByIdAsync(long id)

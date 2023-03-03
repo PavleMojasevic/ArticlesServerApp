@@ -1,4 +1,6 @@
-﻿namespace ServerApp.DTO;
+﻿using ServerApp.Models;
+
+namespace ServerApp.DTO;
 
 public class CommentDTO
 {
@@ -12,5 +14,6 @@ public class CommentDTO
     public bool DislikedUser { get; set; }
     public List<CommentDTO> Replies { get;set; }=new List<CommentDTO>();
     public DateTime Date { get; set; }
+    public CommentStatus Status { get; set; }
 
 }

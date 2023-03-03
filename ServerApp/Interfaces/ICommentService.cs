@@ -10,6 +10,7 @@ namespace ServerApp.Interfaces
         Task<bool> AddDislikeAsync(long commentId, long userId);
         Task<bool> AddLikeAsync(long commentId, long userId);
         Task<bool> ApproveAsync(long commentId);
+        Task<List<CommentDTO>> GetAllAsync();
         Task<List<CommentDTO>> GetAsync(long userId);
         Task<List<CommentDTO>> GetByArticleAsync(long articleId, long userId);
         Task<bool> RejectAsync(long commentId);

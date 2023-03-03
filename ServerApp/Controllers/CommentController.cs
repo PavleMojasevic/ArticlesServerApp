@@ -16,24 +16,20 @@ namespace ServerApp.Controllers
     {
         ICommentService _CommentService;
         IMapper _Mapper;
+        IClaimService _ClaimService;
 
-        public CommentController(ICommentService commentService, IMapper mapper)
+        public CommentController(ICommentService commentService, IMapper mapper, IClaimService claimService)
         {
             _CommentService = commentService;
             _Mapper = mapper;
+            _ClaimService = claimService;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAsync()
         {
-            string? userIdStr = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
-            if (userIdStr == null)
-            {
-                return Unauthorized();
-            }
-            long userId = Convert.ToInt64(userIdStr); 
-            return Ok(await _CommentService.GetAsync(userId));
+            return Ok(await _CommentService.GetAsync(_ClaimService.GetUserId(User)));
         }
         [HttpPost]
         [Authorize]
@@ -41,7 +37,7 @@ namespace ServerApp.Controllers
         {
 
             Comment comment = new(commentDTO.Text, commentDTO.ArticleId);
-            comment.AuthorId = GetUserId()??0;
+            comment.AuthorId = _ClaimService.GetUserId(User);
             if (await _CommentService.AddAsync(comment))
                 return Ok();
             return BadRequest();
@@ -50,7 +46,7 @@ namespace ServerApp.Controllers
         [HttpPut("Like/{commentId}")]
         public async Task<IActionResult> AddLikeAsync(long commentId)
         {
-            long? userId = GetUserId();
+            long? userId = _ClaimService.GetUserId(User);
             if (userId != null)
             {
                 if (await _CommentService.AddLikeAsync(commentId, (long)userId))
@@ -65,7 +61,7 @@ namespace ServerApp.Controllers
         [HttpDelete("Like/{commentId}")]
         public async Task<IActionResult> RemoveLikeAsync(long commentId)
         {
-            long? userId = GetUserId();
+            long? userId = _ClaimService.GetUserId(User);
             if (userId != null)
             {
                 if (await _CommentService.RemoveLikeAsync(commentId, (long)userId))
@@ -80,7 +76,7 @@ namespace ServerApp.Controllers
         [HttpPut("Dislike/{commentId}")]
         public async Task<IActionResult> AddDislikeAsync(long commentId)
         {
-            long? userId = GetUserId();
+            long? userId = _ClaimService.GetUserId(User);
             if (userId != null)
             {
                 if (await _CommentService.AddDislikeAsync(commentId, (long)userId))
@@ -95,7 +91,7 @@ namespace ServerApp.Controllers
         [HttpDelete("Dislike/{commentId}")]
         public async Task<IActionResult> RemoveDislikeAsync(long commentId)
         {
-            long? userId = GetUserId() ;
+            long? userId = _ClaimService.GetUserId(User) ;
             if (userId != null)
             {
                 if (await _CommentService.RemoveDislikeAsync(commentId, (long)userId))
@@ -121,14 +117,10 @@ namespace ServerApp.Controllers
                 return Ok();
             return BadRequest();
         }
-        private long? GetUserId()
+        [HttpGet("All")]
+        public async Task<IActionResult> GetAllAsync()
         {
-            string? userIdStr = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
-            if (userIdStr != null)
-            {
-                return Convert.ToInt64(userIdStr); 
-            }
-            return null;
-        }
+            return Ok(await _CommentService.GetAllAsync());
+        } 
     }
 }

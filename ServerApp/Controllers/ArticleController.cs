@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ServerApp.DTO;
 using ServerApp.Interfaces;
 using ServerApp.Models;
-
+using System.Security.Claims;
 
 namespace ServerApp.Controllers;
 
@@ -15,12 +15,14 @@ public class ArticleController : ControllerBase
     IArticleService _ArticleService;
     ICommentService _CommentService;
     IMapper _Mapper;
+    IClaimService _ClaimService;
 
-    public ArticleController(IArticleService articleService, ICommentService commentService, IMapper mapper)
+    public ArticleController(IArticleService articleService, ICommentService commentService, IMapper mapper, IClaimService claimService)
     {
         _ArticleService = articleService;
         _CommentService = commentService;
         _Mapper = mapper;
+        _ClaimService = claimService;
     }
 
     // GET: api/<ArticleController>
@@ -39,7 +41,7 @@ public class ArticleController : ControllerBase
             return NoContent();
         var result = _Mapper.Map<ArticleDTO>(article);
 
-        result.Comments = _Mapper.Map<List<CommentDTO>>(await _CommentService.GetByArticleAsync(articleId));
+        result.Comments = _Mapper.Map<List<CommentDTO>>(await _CommentService.GetByArticleAsync(articleId, _ClaimService.GetUserId(User)));
         return Ok(result);
     }
 
@@ -47,7 +49,7 @@ public class ArticleController : ControllerBase
     public async Task<IActionResult> AddAsync([FromBody] ArticleAddDTO articleDTO)
     { 
         Article article = _Mapper.Map<Article>(articleDTO);
-        article.AuthorId = GetUserId();
+        article.AuthorId = _ClaimService.GetUserId(User);
         try
         {
             await _ArticleService.AddAsync(article);
@@ -67,12 +69,6 @@ public class ArticleController : ControllerBase
         if (await _ArticleService.UpdateAsync(articleId, editArticeDto))
             return Ok();
         return BadRequest();
-    } 
-    private long GetUserId()
-    {
-        string? userIdStr = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
-
-        return Convert.ToInt64(userIdStr);
-    }
+    }  
 
 }

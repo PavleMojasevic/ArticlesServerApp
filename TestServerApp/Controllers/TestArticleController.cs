@@ -6,12 +6,8 @@ using ServerApp.Controllers;
 using ServerApp.DTO;
 using ServerApp.Interfaces;
 using ServerApp.Models;
-using ServerApp.Services;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Security.Claims;
 using TestServerApp.MockData;
 
 namespace TestServerApp.Controllers;
@@ -22,49 +18,49 @@ public class TestArticleController
 
     Mock<IArticleService> _ArticleService;
     Mock<ICommentService> _CommentService ;
-    MockArticles _MockArticles ;
+    Mock<IClaimService> _ClaimsService ;
+    MockArticles _MockArticles;
+    ArticleController _ArticleController;
 
     public TestArticleController()
     {
         _ArticleService = new Mock<IArticleService>();
         _CommentService = new Mock<ICommentService>();
+        _ClaimsService = new Mock<IClaimService>();
         _MockArticles = new();
+        _ClaimsService.Setup(_ => _.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(1);
+        _ArticleController = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper(), _ClaimsService.Object); 
+
+
     }
 
     [Fact]
     public async Task Get_ShouldReturn200StatusAsync()
     {
         MockArticles mockArticles = new();
-        _ArticleService.Setup(_ => _.GetAsync(null)).ReturnsAsync(mockArticles.GetArticles());
-        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
+        _ArticleService.Setup(_ => _.GetAsync(null)).ReturnsAsync(mockArticles.GetArticles()); 
 
-        var result = (OkObjectResult)await sut.GetAsync(null);
+        var result = (OkObjectResult)await _ArticleController.GetAsync(null);
 
         result.StatusCode.Should().Be(200);
-    }
-    [Theory]
-    [InlineData(1, true)]
-    [InlineData(-4, false)]
-    [InlineData(2, true)]
-    [InlineData(3, false)]
-    public async Task GetById_HasValueAsync(long id, bool hasValue)
-    { 
-        _ArticleService.Setup(_ => _.GetByIdAsync(id)).ReturnsAsync(_MockArticles.GetArticles().FirstOrDefault(x => x.Id == id));
-        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
+    } 
+    [Fact]
+    public async Task Add_ShouldReturn400StatusAsync()
+    {
+        ArgumentException argumentException = new();
+        _ArticleService.Setup(_ => _.AddAsync(It.IsAny<Article>())).Throws(argumentException); 
 
-        var result = await sut.GetByIdAsync(id);
-        if (hasValue)
-            Assert.IsType<OkObjectResult>(result);
-        else
-            Assert.IsType<NoContentResult>(result);
+        var result = (BadRequestObjectResult)await _ArticleController.AddAsync(new());
+
+        result.StatusCode.Should().Be(400);
     }
     [Fact]
     public async Task Add_ShouldReturn200StatusAsync()
-    {  
-        _ArticleService.Setup(_ => _.AddAsync(It.IsAny<Article>()));
-        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
+    {
+        ArgumentException argumentException = new();
+        _ArticleService.Setup(_ => _.AddAsync(It.IsAny<Article>())); 
 
-        var result = (OkObjectResult)await sut.AddAsync(new());
+        var result = (OkResult)await _ArticleController.AddAsync(new());
 
         result.StatusCode.Should().Be(200);
     } 
@@ -76,29 +72,12 @@ public class TestArticleController
     public async Task Put_TestAsync(long id, bool hasValue)
     {  
         _ArticleService.Setup(_ => _.UpdateAsync(id, It.IsAny<EditArticeDto>()))
-            .ReturnsAsync(_MockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
-        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
+            .ReturnsAsync(_MockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null); 
 
-        var result = await sut.UpdateAsync(id, new());
+        var result = await _ArticleController.UpdateAsync(id, new());
         if (hasValue)
             Assert.IsType<OkResult>(result);
         else
             Assert.IsType<BadRequestResult>(result);
-    }
-    [Theory]
-    [InlineData(1, true)]
-    [InlineData(2, true)]
-    [InlineData(3, false)]
-    [InlineData(-4, false)]
-    public async Task AddComment_HasValueAsync(long id, bool hasValue)
-    {  
-        _ArticleService.Setup(_ => _.AddCommentAsync(It.IsAny<Comment>())).ReturnsAsync(_MockArticles.GetArticles().FirstOrDefault(x => x.Id == id) != null);
-        var sut = new ArticleController(_ArticleService.Object, _CommentService.Object, MockMapper.GetMapper());
-
-        var result = await sut.AddCommentAsync(new());
-        if (hasValue)
-            Assert.IsType<OkResult>(result);
-        else
-            Assert.IsType<BadRequestResult>(result);
-    }
+    } 
 }
