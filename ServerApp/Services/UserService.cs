@@ -26,6 +26,7 @@ public class UserService : IUserService
 
     public async Task<bool> AddAsync(User user)
     {
+        user.Created = DateTime.Now;
         user.Password = Encode(user.Password);
         await _DbContext.Users.AddAsync(user);
         await _DbContext.SaveChangesAsync();
@@ -46,17 +47,15 @@ public class UserService : IUserService
     private const string _pepper = "asfuegwhvgwoe";
     string Encode(string raw)
     {
-        using (var sha = SHA256.Create())
-        {
-            var computedHash = sha.ComputeHash(
-            Encoding.Unicode.GetBytes(raw + _pepper));
-            return Convert.ToBase64String(computedHash);
-        }
+        using var sha = SHA256.Create();
+        var computedHash = sha.ComputeHash(
+        Encoding.Unicode.GetBytes(raw + _pepper));
+        return Convert.ToBase64String(computedHash);
     }
     public async Task<JWToken?> LoginAsync(LoginCredencials credencials)
     {
-        User? user =await _DbContext.Users.FirstOrDefaultAsync(x => 
-            x.Username == credencials.Username && 
+        User? user = await _DbContext.Users.FirstOrDefaultAsync(x =>
+            x.Username == credencials.Username &&
             x.Password == Encode(credencials.Password));
         if (user == null)
             return null;
@@ -68,7 +67,7 @@ public class UserService : IUserService
         JwtSecurityToken tokeOptions = new(
                issuer: _TokenAddress.Value,
                claims: claims,
-               expires: DateTime.Now.AddDays(1),
+               expires: DateTime.Now.AddMonths(3),
                signingCredentials: signinCredentials
            );
         return new() { Token = new JwtSecurityTokenHandler().WriteToken(tokeOptions) };
@@ -80,10 +79,10 @@ public class UserService : IUserService
         if (userFromDb == null)
         {
             return false;
-        } 
-        userFromDb.Username=user.Username;
+        }
+        userFromDb.Username = user.Username;
         userFromDb.Password = Encode(user.Password);
-        userFromDb.Email=user.Email;
+        userFromDb.Email = user.Email;
         await _DbContext.SaveChangesAsync();
         return true;
     }

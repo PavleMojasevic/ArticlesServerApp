@@ -6,13 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestServerApp.MockData
+namespace TestServerApp.MockData;
+
+public class MockComment
 {
-    public class MockComment
+    public List<CommentDTO>GetCommentsDTO()
     {
-        public List<CommentDTO>GetCommentsDTO()
-        {
-            return new List<CommentDTO>();
-        }
+        return new List<CommentDTO>();
     }
 }

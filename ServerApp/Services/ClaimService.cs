@@ -1,14 +1,13 @@
 ﻿using ServerApp.Interfaces;
 using System.Security.Claims;
 
-namespace ServerApp.Services
+namespace ServerApp.Services;
+
+public class ClaimService : IClaimService
 {
-    public class ClaimService : IClaimService
+    public long GetUserId(ClaimsPrincipal User)
     {
-        public long GetUserId(ClaimsPrincipal User)
-        {
-            string? userIdStr = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value; 
-            return Convert.ToInt64(userIdStr);
-        }
+        string? userIdStr = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value; 
+        return Convert.ToInt64(userIdStr);
     }
 }

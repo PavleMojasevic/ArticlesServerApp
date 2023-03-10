@@ -1,4 +1,3 @@
-using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -6,7 +5,6 @@ using ServerApp.Controllers;
 using ServerApp.DTO;
 using ServerApp.Interfaces;
 using ServerApp.Models;
-using System;
 using System.Security.Claims;
 using TestServerApp.MockData;
 
@@ -43,6 +41,29 @@ public class TestArticleController
         var result = (OkObjectResult)await _ArticleController.GetAsync(null);
 
         result.StatusCode.Should().Be(200);
+    } 
+    [Fact]
+    public async Task GetById_ShouldReturn200StatusAsync()
+    {
+        MockArticles mockArticles = new();
+        _ArticleService.Setup(_ => _.GetByIdAsync(1)).ReturnsAsync(new Article()); 
+        _CommentService.Setup(_ => _.GetByArticleAsync(1,1)).ReturnsAsync(new List<CommentDTO>()); 
+
+        var result = (OkObjectResult)await _ArticleController.GetByIdAsync(1);
+
+        result.StatusCode.Should().Be(200);
+    } 
+    [Fact]
+    public async Task GetById_ShouldReturn204StatusAsync()
+    {
+        MockArticles mockArticles = new();
+        Article? article = null;
+        _ArticleService.Setup(_ => _.GetByIdAsync(1)).ReturnsAsync(article); 
+        _CommentService.Setup(_ => _.GetByArticleAsync(1,1)).ReturnsAsync(new List<CommentDTO>()); 
+
+        var result = (NoContentResult)await _ArticleController.GetByIdAsync(1);
+
+        result.StatusCode.Should().Be(204);
     } 
     [Fact]
     public async Task Add_ShouldReturn400StatusAsync()

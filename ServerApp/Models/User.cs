@@ -3,7 +3,7 @@
 namespace ServerApp.Models;
 
 public enum UserRole { AUTHOR, READER, ADMIN}
-public class User:ICloneable
+public class User
 {
     public long Id { get; set; }
     public string FirstName{ get; set; } = "";
@@ -18,7 +18,7 @@ public class User:ICloneable
     public List<Comment> Liked { get; set; } = new List<Comment>();
     public List<Comment> Disliked { get; set; } = new List<Comment>();
 
-    public object Clone()
+    public User Clone()
     {
         User user = new()
         {
