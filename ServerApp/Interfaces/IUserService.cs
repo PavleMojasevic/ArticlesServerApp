@@ -9,6 +9,6 @@ public interface IUserService
 
     Task<List<User>?> GetAsync();
     Task<User?> GetByIdAsync(long id);
-    Task<bool> AddAsync(User entity);
+    Task AddAsync(User entity);
     Task<bool> UpdateAsync(long id, EditUserDTO entity);
 }

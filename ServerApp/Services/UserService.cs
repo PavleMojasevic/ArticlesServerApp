@@ -14,23 +14,22 @@ namespace ServerApp.Services;
 public class UserService : IUserService
 {
     private readonly ArticlesDbContext _DbContext;
-    private readonly IConfigurationSection _SecretKey;
-    private readonly IConfigurationSection _TokenAddress;
+    private readonly string _SecretKey;
+    private readonly string _TokenAddress;
 
     public UserService(ArticlesDbContext dbContext, IConfiguration config)
     {
         _DbContext = dbContext;
-        _SecretKey = config.GetSection("SecretKey");
-        _TokenAddress = config.GetSection("tokenAddress");
+        _SecretKey = config.GetSection("SecretKey") != null ? config.GetSection("SecretKey").Value : "kj9jh98NuyG6f5Bvdgvfswevg=K9nN9b78B7b";
+        _TokenAddress = config.GetSection("tokenAddress") != null ? config.GetSection("tokenAddress").Value : "address";
     }
 
-    public async Task<bool> AddAsync(User user)
+    public async Task AddAsync(User user)
     {
         user.Created = DateTime.Now;
         user.Password = Encode(user.Password);
         await _DbContext.Users.AddAsync(user);
         await _DbContext.SaveChangesAsync();
-        return true;
     }
 
 
@@ -41,7 +40,7 @@ public class UserService : IUserService
 
     public async Task<User?> GetByIdAsync(long id)
     {
-        return await _DbContext.Users.FindAsync(id);
+        return await _DbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
     }
 
     private const string _pepper = "asfuegwhvgwoe";
@@ -62,10 +61,10 @@ public class UserService : IUserService
         List<Claim> claims = new List<Claim>();
         claims.Add(new Claim("id", user.Id.ToString()));
         claims.Add(new Claim("role", user.Role.ToString()));
-        SymmetricSecurityKey secretKey = new(Encoding.UTF8.GetBytes(_SecretKey.Value));
+        SymmetricSecurityKey secretKey = new(Encoding.UTF8.GetBytes(_SecretKey));
         SigningCredentials signinCredentials = new(secretKey, SecurityAlgorithms.HmacSha256);
         JwtSecurityToken tokeOptions = new(
-               issuer: _TokenAddress.Value,
+               issuer: _TokenAddress,
                claims: claims,
                expires: DateTime.Now.AddMonths(3),
                signingCredentials: signinCredentials
@@ -75,7 +74,7 @@ public class UserService : IUserService
 
     public async Task<bool> UpdateAsync(long id, EditUserDTO user)
     {
-        User? userFromDb = await _DbContext.Users.FindAsync(id);
+        User? userFromDb = await _DbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
         if (userFromDb == null)
         {
             return false;

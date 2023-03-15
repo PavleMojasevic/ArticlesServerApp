@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using ServerApp.DTO;
 using ServerApp.Interfaces;
 using ServerApp.Models;
-using ServerApp.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,13 +14,12 @@ namespace ServerApp.Controllers;
 public class UserController : ControllerBase
 {
     // GET: api/<UsersController>
-    IUserService _UserService;
-    IMapper _Mapper;
-
+    private readonly IUserService _UserService;
+    private readonly IMapper _Mapper;
     public UserController(IUserService userService, IMapper mapper)
     {
         _UserService = userService;
-        _Mapper = mapper; 
+        _Mapper = mapper;
     }
 
     [HttpGet]
@@ -46,9 +44,8 @@ public class UserController : ControllerBase
     {
 
         User user = _Mapper.Map<User>(userDTO);
-        if (await _UserService.AddAsync(user))
-            return Ok();
-        return BadRequest();
+        await _UserService.AddAsync(user);
+        return Ok();
 
     }
     [HttpPost("Login")]

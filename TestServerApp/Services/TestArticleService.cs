@@ -1,39 +1,50 @@
-﻿using Moq;
+﻿using MockQueryable.Moq;
+using Moq;
+using ServerApp.DTO;
 using ServerApp.Infrastucture;
 using ServerApp.Models;
 using ServerApp.Services;
 using TestServerApp.MockData;
-using MockQueryable.Moq;
-using System.Data.Entity;
-using ServerApp.DTO;
-using Microsoft.AspNetCore.Mvc;
-using ServerApp.Controllers;
-using ServerApp.Interfaces;
 
 namespace TestServerApp.Services;
 
 
 public class TestArticleService
 {
+
+    private readonly Mock<Microsoft.EntityFrameworkCore.DbSet<Article>> _DbSet;
+    private readonly MockArticles mockArticles = new();
+    private readonly Mock<ArticlesDbContext> mockDbContext;
+    private readonly ArticleService articleService;
+    public TestArticleService()
+    {
+        _DbSet = mockArticles.GetArticles()
+            .BuildMock()
+            .BuildMockDbSet();
+        mockDbContext = new();
+        mockDbContext.Setup(x => x.Articles)
+                     .Returns(_DbSet.Object);
+        articleService = new(mockDbContext.Object);
+    }
+
     [Theory]
     [InlineData(-1, false)]
     [InlineData(-2, false)]
-    [InlineData(1, true)]
+    [InlineData(1, false)]
     [InlineData(2, true)]
     [InlineData(33, false)]
     public async Task Add_TestAsync(long id, bool expected)
     {
-        MockArticles mockArticles = new();
         Article? article;
         article = (id > 0) ? mockArticles.GetArticles().FirstOrDefault(x => x.Id == id) :
                              mockArticles.GetInvalidArticles().FirstOrDefault(x => x.Id == -id);
-        
+
         if (article == null)
         {
             Assert.False(expected);
             return;
         }
-        var mock = new List<Article>()
+        var mock = new List<Article> { new() { Title = "title1" } }
            .BuildMock().BuildMockDbSet();
 
         var mockDbContext = new Mock<ArticlesDbContext>();
@@ -58,31 +69,22 @@ public class TestArticleService
     [Fact]
     public async Task Get_ShouldReturnArticlesAsync()
     {
-        MockArticles mockArticles = new();
-        var mock = mockArticles.GetArticles()
-            .BuildMock().BuildMockDbSet();
 
-        var mockDbContext = new Mock<ArticlesDbContext>();
-        mockDbContext.Setup(x => x.Articles)
-                     .Returns(mock.Object);
-
-
-        ArticleService articleService = new(mockDbContext.Object);
         var filter = new ArticleFilterDTO
         {
             CategoryId = 1,
             AuthorId = 1,
-            Tag = null
+            Tag = "tag"
         };
 
         var employee = await articleService.GetAsync();
         Assert.NotNull(employee);
-        Assert.True(employee.Count == mock.Object.Count());
+        Assert.True(employee.Count == _DbSet.Object.Count());
 
 
         employee = await articleService.GetAsync(filter);
         Assert.NotNull(employee);
-        Assert.True(employee.Count <= mock.Object.Count());
+        Assert.True(employee.Count <= _DbSet.Object.Count());
     }
     [Theory]
     [InlineData(1, true)]
@@ -91,14 +93,6 @@ public class TestArticleService
     [InlineData(-4, false)]
     public async Task GetById_HasValueAsync(long id, bool hasValue)
     {
-        MockArticles mockArticles = new();
-        var mock = mockArticles.GetArticles()
-            .BuildMock().BuildMockDbSet();
-
-        var mockDbContext = new Mock<ArticlesDbContext>();
-        mockDbContext.Setup(x => x.Articles)
-                     .Returns(mock.Object);
-        ArticleService articleService = new(mockDbContext.Object);
         if (hasValue)
             Assert.True(await articleService.GetByIdAsync(id) != null);
         else
@@ -117,18 +111,6 @@ public class TestArticleService
     [InlineData(-4, 1, false)]
     public async Task Put_TestAsync(long id, int index, bool hasValue)
     {
-        MockArticles mockArticles = new();
-        var mock = mockArticles.GetArticles()
-            .BuildMock().BuildMockDbSet();
-
-        var mockDbContext = new Mock<ArticlesDbContext>();
-        mockDbContext.Setup(x => x.Articles)
-                     .Returns(mock.Object);
-        ArticleService articleService = new(mockDbContext.Object);
-        //TODO
-
-
         Assert.True(await articleService.UpdateAsync(id, mockArticles.GetEditArticeDto()[index]) == hasValue);
-
     }
 }
