@@ -1,8 +1,7 @@
-﻿namespace ServerApp.Models
+﻿namespace ServerApp.Models;
+
+public class ErrorResponse
 {
-    public class ErrorResponse
-    {
-        public string Title { get; set; }
-        public string Details { get; set; }
-    }
+    public string Title { get; set; }
+    public string Details { get; set; }
 }

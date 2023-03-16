@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ServerApp.DTO;
 using ServerApp.Interfaces;
 using ServerApp.Models;
- 
+using System.Security.Claims;
 
 namespace ServerApp.Controllers;
 
@@ -13,56 +13,62 @@ namespace ServerApp.Controllers;
 public class ArticleController : ControllerBase
 {
     IArticleService _ArticleService;
+    ICommentService _CommentService;
     IMapper _Mapper;
-    public ArticleController(IArticleService articleservice, IMapper mapper)
+    IClaimService _ClaimService;
+
+    public ArticleController(IArticleService articleService, ICommentService commentService, IMapper mapper, IClaimService claimService)
     {
+        _ArticleService = articleService;
+        _CommentService = commentService;
         _Mapper = mapper;
-        _ArticleService = articleservice;
+        _ClaimService = claimService;
     }
+
     // GET: api/<ArticleController>
     [HttpGet]
-    public async Task<IActionResult> GetAsync([FromQuery]ArticleFilterDTO? filter)
+    public async Task<IActionResult> GetAsync([FromQuery] ArticleFilterDTO? filter)
     {
-        List<Article> articles = await _ArticleService.GetAsync(filter); 
+        List<Article> articles = await _ArticleService.GetAsync(filter);
         return Ok(_Mapper.Map<List<ArticleDTO>>(articles));
     }
-     
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetByIdAsync(long id)
+
+    [HttpGet("{articleId}")]
+    public async Task<IActionResult> GetByIdAsync(long articleId)
     {
-        Article? article = await _ArticleService.GetByIdAsync(id);
+        Article? article = await _ArticleService.GetByIdAsync(articleId);
         if (article == null)
             return NoContent();
-        return Ok(_Mapper.Map<ArticleDTO>(article)); 
+        var result = _Mapper.Map<ArticleDTO>(article);
+
+        result.Comments = _Mapper.Map<List<CommentDTO>>(await _CommentService.GetByArticleAsync(articleId, _ClaimService.GetUserId(User)));
+        return Ok(result);
     }
-     
+
     [HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody] ArticleDTO articleDTO)
-    {
-         Article article = _Mapper.Map<Article>(articleDTO);
-            return Ok(await _ArticleService.AddAsync(article)); 
-         
+    public async Task<IActionResult> AddAsync([FromBody] ArticleAddDTO articleDTO)
+    { 
+        Article article = _Mapper.Map<Article>(articleDTO);
+        article.AuthorId = _ClaimService.GetUserId(User);
+        try
+        {
+            await _ArticleService.AddAsync(article);
+            return Ok();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+
     }
 
     // PUT api/<ArticleController>/5
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAsync(long id, [FromBody] EditArticeDto editArticeDto)
-    {  
-        if (await _ArticleService.UpdateAsync(id, editArticeDto))
+    [HttpPut("{articleId}")]
+    public async Task<IActionResult> UpdateAsync(long articleId, [FromBody] EditArticeDto editArticeDto)
+    {
+        if (await _ArticleService.UpdateAsync(articleId, editArticeDto))
             return Ok();
         return BadRequest();
-    }
-     
-    [HttpPost("Comment")]
-    [Authorize]
-    public async Task<IActionResult> AddCommentAsync(CommentAddDTO commentDTO)
-    {
-        Comment comment = _Mapper.Map<Comment>(commentDTO);
-        //TODO
+    }  
 
-        if (await _ArticleService.AddCommentAsync(comment))
-            return Ok();
-        return BadRequest(); 
-    }
-    
 }

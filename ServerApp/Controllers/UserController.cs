@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using ServerApp.DTO;
 using ServerApp.Interfaces;
 using ServerApp.Models;
-using ServerApp.Services;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -12,20 +11,21 @@ namespace ServerApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UsersController : ControllerBase
+public class UserController : ControllerBase
 {
     // GET: api/<UsersController>
-    IUserService _UserService;
-    IMapper _Mapper;
-    public UsersController(IUserService userService, IMapper mapper)
+    private readonly IUserService _UserService;
+    private readonly IMapper _Mapper;
+    public UserController(IUserService userService, IMapper mapper)
     {
-        _Mapper = mapper;
         _UserService = userService;
+        _Mapper = mapper;
     }
+
     [HttpGet]
     public async Task<IActionResult> GetAsync()
     {
-        List<User> articles = await _UserService.GetAsync();
+        List<User>? articles = await _UserService.GetAsync();
         return Ok(_Mapper.Map<List<UserDTO>>(articles));
     }
 
@@ -40,11 +40,12 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddAsync([FromBody] UserDTO userDTO)
+    public async Task<IActionResult> AddAsync([FromBody] UserAddDTO userDTO)
     {
 
         User user = _Mapper.Map<User>(userDTO);
-        return Ok(await _UserService.AddAsync(user));
+        await _UserService.AddAsync(user);
+        return Ok();
 
     }
     [HttpPost("Login")]
@@ -59,7 +60,7 @@ public class UsersController : ControllerBase
 
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAsync(long id, [FromBody] EditUserDTO userDTO)
-    { 
+    {
 
         if (await _UserService.UpdateAsync(id, userDTO))
             return Ok();

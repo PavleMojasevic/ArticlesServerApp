@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ServerApp.DTO;
 using ServerApp.Infrastucture;
 using ServerApp.Interfaces;
@@ -16,68 +15,64 @@ public class ArticleService : IArticleService
         _DbContext = dbContext;
     }
 
-    public async Task<bool> AddAsync(Article article)
+    public async Task AddAsync(Article article)
     {
-        if (article.Image?.Length == 0) return false;
-        if (string.IsNullOrWhiteSpace(article.Title)) return false;
-        if (article.Category == null) return false;
+        if (string.IsNullOrWhiteSpace(article.Title)) throw new ArgumentException("Title is not valid");
+        if (article.CategoryId == 0) throw new ArgumentException("Category id is not valid");
 
 
-        if (_DbContext.Articles.Any(x => x.Title == article.Title)) return false;
+        if (_DbContext.Articles.Any(x => x.Title == article.Title)) throw new ArgumentException("Article with this title already exists");
 
-        article.CategoryId = article.Category.Id;
         article.Comments = new List<Comment>();
         article.Date = DateTime.Now;
-
+        var tags = article.Tags;
         await _DbContext.Articles.AddAsync(article);
-        return true;
-    }
 
-    public async Task<bool> AddCommentAsync(Comment comment)
-    {
-        await _DbContext.Comments.AddAsync(comment);
-        return true;
-    }
+        await _DbContext.SaveChangesAsync();
 
+    }
 
     public async Task<List<Article>> GetAsync(ArticleFilterDTO? filter = null)
     {
 
         IQueryable<Article> articles = _DbContext.Articles.Include(x => x.Tags);
         if (filter != null)
-        { 
+        {
             if (filter.AuthorId != null)
             {
                 articles = articles.Where(x => x.AuthorId == filter.AuthorId);
             }
-            if (filter.TagId != null)
+            if (filter.Tag != null)
             {
-                articles = articles.Where(x => x.Tags.Any(y => y.Id == filter.TagId));
-            } 
+                articles = articles.Where(x => x.Tags.Any(y => y.TagName == filter.Tag));
+            }
             if (filter.CategoryId != null)
             {
                 articles = articles.Where(x => x.CategoryId == filter.CategoryId);
-            } 
+            }
         }
-        return await articles.ToListAsync();
+        var result = await articles.ToListAsync();
+
+
+        return result;
     }
 
     public async Task<Article?> GetByIdAsync(long id)
     {
-        Article? article = await _DbContext.Articles.FindAsync(id);
+        Article? article = await _DbContext.Articles.Include(x => x.Tags).FirstOrDefaultAsync(x => x.Id == id);
         return article;
     }
 
     public async Task<bool> UpdateAsync(long id, EditArticeDto article)
     {
-        Article? articleFromDb = await _DbContext.Articles.FindAsync(id);
+        Article? articleFromDb = await _DbContext.Articles.FirstOrDefaultAsync(x => x.Id == id);
         if (articleFromDb == null)
         {
             return false;
         }
         if (article.CategoryId != null)
         {
-            articleFromDb.CategoryId = article.CategoryId;
+            articleFromDb.CategoryId = (long)article.CategoryId;
         }
         if (article.Content != null)
         {

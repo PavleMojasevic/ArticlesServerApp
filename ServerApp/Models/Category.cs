@@ -2,8 +2,8 @@
 
 public class Category
 {
-    public long Id { get; set; }    
-    public string Name { get; set; }
+    public long Id { get; set; }
+    public string Name { get; set; } = "";    
     public long? ParentId { get; set; }
     public Category? Parent { get; set; }
     public List<Category> Subcategories { get; set; } = new List<Category>();

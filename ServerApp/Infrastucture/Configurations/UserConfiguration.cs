@@ -20,5 +20,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(x => x.Author)
             .HasForeignKey(x => x.AuthorId)
             .OnDelete(DeleteBehavior.SetNull);
+
+        builder.HasMany(x => x.Liked)
+            .WithMany(x => x.Liked);
+        builder.HasMany(x => x.Disliked)
+            .WithMany(x => x.Disliked);
     }
 }

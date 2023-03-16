@@ -1,4 +1,5 @@
-﻿using ServerApp.Models;
+﻿using ServerApp.DTO;
+using ServerApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ public class MockArticles
                 Date=DateTime.Today,
                 Image=null,
                 Id=1,
-                Tags=new List<Tag>{ new Tag { Name = "tag1" },new Tag{ Name = "tag2" } },
+                Tags=new (){ new() { TagName = "tag1", ArticleId=1 },new (){ TagName = "tag2", ArticleId = 1 } },
                 Title="title1"
             },
             new ()
@@ -45,31 +46,30 @@ public class MockArticles
                 Date=DateTime.Now.AddDays(-1),
                 Image=null,
                 Id=2,
-                Tags=new List<Tag>{ new Tag { Name = "tag3" },new Tag{ Name = "tag2" } },
+                Tags=new (){ new() { TagName = "tag3", ArticleId = 2},new() { TagName = "tag2", ArticleId = 2} },
                 Title="title2"
             },
 
-        }; 
-        
+        };
+
         return articles;
     }
     public List<Article> GetInvalidArticles()
     {
         List<User> users = _MockUsers.GetUsersWithoutArticles();
 
-        List<Article> articles = new ()
+        List<Article> articles = new()
         {
             new ()
             {
                 Author=users[0],
                 AuthorId=users[0].Id,
-                Category=null,
                 CategoryId=0,
                 Comments=new List<Comment>(),
                 Date=DateTime.Today,
                 Image=null,
                 Id=1,
-                Tags=new List<Tag>{ new Tag { Name = "tag1" },new Tag{ Name = "tag2" } },
+                Tags=new (){ new () { TagName = "tag1", ArticleId=1 },new (){ TagName = "tag2" , ArticleId=1} },
                 Title="title1"
             },
             new ()
@@ -79,15 +79,56 @@ public class MockArticles
                 Category=new Category{Id=1, Name="c2"},
                 CategoryId=2,
                 Comments=new List<Comment>(),
-                Date=DateTime.Now.AddDays(-1),
                 Image=null,
                 Id=2,
-                Tags=new List<Tag>{ new Tag { Name = "tag3" },new Tag{ Name = "tag2" } },
+                Tags=new (){ new (){ TagName = "tag3" },new (){ TagName = "tag2" } },
                 Title=""
             },
 
-        }; 
-        
+        };
+
+        return articles;
+    }
+    public List<EditArticeDto> GetEditArticeDto()
+    {
+        List<EditArticeDto> articles = new()
+        {
+            new()
+            {
+                Content=null,
+                CategoryId=1,
+                Image=new byte[20],
+                Title="title"
+            },
+            new()
+            {
+                Content="content",
+                CategoryId=null,
+                Image=new byte[20],
+                Title="title"
+            },
+            new()
+            {
+                Content="content",
+                CategoryId=1,
+                Image=new byte[20],
+                Title="title"
+            },
+            new()
+            {
+                Content="content",
+                CategoryId=1,
+                Image=null,
+                Title="title"
+            },
+            new()
+            {
+                Content="content",
+                CategoryId=1,
+                Image=new byte[20],
+                Title=null
+            }
+        };
         return articles;
     }
 }
