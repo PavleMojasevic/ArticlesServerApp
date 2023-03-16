@@ -34,16 +34,9 @@ public class TestArticleService
     [InlineData(2, false)]
     public async Task Add_TestAsync(long id, bool expected)
     {
-        Article article;
-        if (id > 0)
-        {
-            article = mockArticles.GetArticles().First(x => x.Id == id);
-        }
-        else
-            article = mockArticles.GetInvalidArticles().First(x => x.Id == -id);
-
-
-        ArticleService articleService = new(mockDbContext.Object);
+        Article article = id > 0
+            ? mockArticles.GetArticles().First(x => x.Id == id)
+            : mockArticles.GetInvalidArticles().First(x => x.Id == -id);
         if (expected)
         {
             article.Title = "newTitle";
