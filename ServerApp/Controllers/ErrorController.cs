@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using ServerApp.DTO;
-using System.Net;
+﻿using System.Net;
 
 namespace ServerApp.Controllers;
 
@@ -14,7 +10,7 @@ public class ErrorController : ControllerBase
     public IActionResult HandleError()
     {
         var exeptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
-        var exception = exeptionHandlerFeature?.Error; 
+        var exception = exeptionHandlerFeature?.Error;
         ErrorResponse errorResponse = new ErrorResponse
         {
             Message = exception?.Message ?? "Unknown exception occured"
