@@ -14,7 +14,7 @@ public class ErrorController : ControllerBase
     {
         var exeptionHandlerFeature = HttpContext.Features.Get<IExceptionHandlerFeature>();
         var exception = exeptionHandlerFeature?.Error;
-        ErrorResponse errorResponse = new ErrorResponse
+        ErrorResponse errorResponse = new()
         {
             Message = exception?.Message ?? "Unknown exception occured"
         };
