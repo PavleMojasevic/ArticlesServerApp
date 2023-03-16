@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ServerApp.DTO;
 using ServerApp.Infrastucture;
 using ServerApp.Interfaces;
@@ -26,13 +25,21 @@ public class CommentService : ICommentService
         return true;
     }
 
-   
+
 
     public async Task<bool> ApproveAsync(long commentId)
     {
         Comment? comment = await _DbContext.Comments.FirstOrDefaultAsync(x => x.Id == commentId);
         if (comment == null || comment.Status != CommentStatus.Undefined) return false;
         comment.Status = CommentStatus.Approved;
+        await _DbContext.SaveChangesAsync();
+        return true;
+    }
+    public async Task<bool> RejectAsync(long commentId)
+    {
+        Comment? comment = await _DbContext.Comments.FirstOrDefaultAsync(x => x.Id == commentId);
+        if (comment == null || comment.Status != CommentStatus.Undefined) return false;
+        comment.Status = CommentStatus.Rejected;
         await _DbContext.SaveChangesAsync();
         return true;
     }
@@ -100,14 +107,7 @@ public class CommentService : ICommentService
         }).ToListAsync();
     }
 
-    public async Task<bool> RejectAsync(long commentId)
-    {
-        Comment? comment = await _DbContext.Comments.Include(x => x.Liked).FirstOrDefaultAsync(x => x.Id == commentId);
-        if (comment == null) return false;
-        comment.Status = CommentStatus.Rejected;
-        await _DbContext.SaveChangesAsync();
-        return true;
-    }
+
 
 
     public async Task<bool> AddDislikeAsync(long commentId, long userId)
@@ -201,7 +201,7 @@ public class CommentService : ICommentService
         if (comment.Liked.All(x => x.Id != userId))
             return false;
         comment.Liked.Remove(user);
-        comment.Likes = comment.Liked.Count; 
+        comment.Likes = comment.Liked.Count;
         await _DbContext.SaveChangesAsync();
         return true;
     }

@@ -29,51 +29,13 @@ public class TestUserService
         _UserService = new(_MockDbContext.Object, configuration.Object);
     }
 
-    /* [Theory]
-    [InlineData(-1, false)]
-    [InlineData(-2, false)]
-    [InlineData(1, false)]
-    [InlineData(2, true)]
-    [InlineData(33, false)]
-   public async Task Add_TestAsync(long id, bool expected)
-    {
-        Article? article;
-        article = (id > 0) ? _MockUsers.GetUsers().FirstOrDefault(x => x.Id == id) :
-                             _MockUsers.get().FirstOrDefault(x => x.Id == -id);
-
-        if (article == null)
-        {
-            Assert.False(expected);
-            return;
-        }
-        var mock = new List<Article> { new() { Title = "title1" } }
-           .BuildMock().BuildMockDbSet();
-
-        var mockDbContext = new Mock<ArticlesDbContext>();
-        mockDbContext.Setup(x => x.Articles)
-                     .Returns(mock.Object);
-
-        ArticleService articleService = new(mockDbContext.Object);
-
-        try
-        {
-            await articleService.AddAsync(article);
-            Assert.True(expected);
-
-        }
-        catch (ArgumentException)
-        {
-            Assert.False(expected);
-        }
-
-    }*/
 
     [Fact]
-    public async Task Get_ShouldReturnArticlesAsync()
+    public async Task Get_ShouldReturnUsersAsync()
     {
-        var employee = await _UserService.GetAsync();
-        Assert.NotNull(employee);
-        Assert.True(employee.Count == _DbSet.Object.Count());
+        var users = await _UserService.GetAsync();
+        Assert.NotNull(users);
+        Assert.True(users.Count == _DbSet.Object.Count());
     }
     [Fact]
     public async Task AddUserAsync()

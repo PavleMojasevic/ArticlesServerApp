@@ -5,7 +5,7 @@ namespace TestServerApp.MockData;
 
 public class MockUsers
 {
-    private List<User> _Users = new List<User>
+    private List<User> _Users = new()
     {
         GetUser(1,"user1","7PdGGtoSal85KyZaP7/ZiNgp2daz691R+jb6h87hMu4=", UserRole.AUTHOR),
         GetUser(2,"user2","prLcxdx+OEsn4R0gGVcd2fAg9Y+vtTl8u9H63mGWLLk=", UserRole.ADMIN),

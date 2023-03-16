@@ -20,6 +20,8 @@ public class CategoryService : ICategoryService
             return false;
         if (_DbContext.Categories.Any(x => x.Name == category.Name))
             return false;
+        if (category.ParentId != null && !_DbContext.Categories.Any(x => x.Id == category.ParentId))
+            return false;
         await _DbContext.Categories.AddAsync(category);
         await _DbContext.SaveChangesAsync();
         return true;
@@ -30,17 +32,20 @@ public class CategoryService : ICategoryService
 
         if (string.IsNullOrWhiteSpace(categoryDTO.Name))
             return false;
+        if (categoryDTO.ParentId != null && !_DbContext.Categories.Any(x => x.Id == categoryDTO.ParentId))
+            return false;
         Category? category = await _DbContext.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
         if (category == null)
             return false;
-        category.Name=categoryDTO.Name;
-        category.ParentId=categoryDTO.ParentId;
-        await _DbContext.SaveChangesAsync(); 
+
+        category.Name = categoryDTO.Name;
+        category.ParentId = categoryDTO.ParentId;
+        await _DbContext.SaveChangesAsync();
         return true;
     }
 
     public async Task<List<Category>> GetAsync()
     {
-        return await _DbContext.Categories.ToListAsync();   
+        return await _DbContext.Categories.ToListAsync();
     }
 }
