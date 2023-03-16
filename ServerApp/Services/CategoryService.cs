@@ -20,7 +20,7 @@ public class CategoryService : ICategoryService
             return false;
         if (_DbContext.Categories.Any(x => x.Name == category.Name))
             return false;
-        if (category.ParentId != null && !_DbContext.Categories.Any(x => x.Id == category.ParentId))
+        if (category.ParentId != null && _DbContext.Categories.All(x => x.Id != category.ParentId))
             return false;
         await _DbContext.Categories.AddAsync(category);
         await _DbContext.SaveChangesAsync();
@@ -32,7 +32,7 @@ public class CategoryService : ICategoryService
 
         if (string.IsNullOrWhiteSpace(categoryDTO.Name))
             return false;
-        if (categoryDTO.ParentId != null && !_DbContext.Categories.Any(x => x.Id == categoryDTO.ParentId))
+        if (categoryDTO.ParentId != null && _DbContext.Categories.All(x => x.Id != categoryDTO.ParentId))
             return false;
         Category? category = await _DbContext.Categories.FirstOrDefaultAsync(x => x.Id == categoryId);
         if (category == null)

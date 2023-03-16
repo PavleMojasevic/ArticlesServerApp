@@ -30,29 +30,24 @@ public class TestArticleService
     [Theory]
     [InlineData(-1, false)]
     [InlineData(-2, false)]
-    [InlineData(1, false)]
     [InlineData(2, true)]
-    [InlineData(33, false)]
+    [InlineData(2, false)]
     public async Task Add_TestAsync(long id, bool expected)
     {
-        Article? article;
-        article = (id > 0) ? mockArticles.GetArticles().FirstOrDefault(x => x.Id == id) :
-                             mockArticles.GetInvalidArticles().FirstOrDefault(x => x.Id == -id);
-
-        if (article == null)
+        Article article;
+        if (id > 0)
         {
-            Assert.False(expected);
-            return;
+            article = mockArticles.GetArticles().First(x => x.Id == id);
         }
-        var mock = new List<Article> { new() { Title = "title1" } }
-           .BuildMock().BuildMockDbSet();
+        else
+            article = mockArticles.GetInvalidArticles().First(x => x.Id == -id);
 
-        var mockDbContext = new Mock<ArticlesDbContext>();
-        mockDbContext.Setup(x => x.Articles)
-                     .Returns(mock.Object);
 
         ArticleService articleService = new(mockDbContext.Object);
-
+        if (expected)
+        {
+            article.Title = "newTitle";
+        }
         try
         {
             await articleService.AddAsync(article);
