@@ -39,6 +39,7 @@ public class TestCategoryService
     [InlineData("Category3", null, true)]
     [InlineData("Category3", (long)1, true)]
     [InlineData("Category3", (long)11, false)]
+    [InlineData("", (long)11, false)]
     public async Task AddCategoryAsync(string name, long? parent, bool isValid)
     {
         Assert.Equal(isValid, await _CategoryService.AddAsync(new() { Name = name, ParentId = parent }));
@@ -49,6 +50,7 @@ public class TestCategoryService
     [InlineData(1, "Category3", null, true)]
     [InlineData(1, "Category3", (long)1, true)]
     [InlineData(1, "Category3", (long)11, false)]
+    [InlineData(1, "", (long)11, false)]
     public async Task EditCategoryAsync(long id, string name, long? parent, bool isValid)
     {
         Assert.Equal(isValid, await _CategoryService.EditAsync(id, new() { Name = name, ParentId = parent }));
