@@ -20,7 +20,7 @@ public class ErrorController : ControllerBase
         };
         var result = new ObjectResult(errorResponse)
         {
-            StatusCode = (int)HttpStatusCode.InternalServerError,
+            StatusCode = (int)HttpStatusCode.BadRequest,
         };
         return result;
     }

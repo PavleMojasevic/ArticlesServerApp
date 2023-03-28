@@ -25,9 +25,25 @@ public class ArticleService : IArticleService
 
         article.Comments = new List<Comment>();
         article.Date = DateTime.Now;
-        var tags = article.Tags;
         await _DbContext.Articles.AddAsync(article);
+        await _DbContext.SaveChangesAsync();
 
+
+    }
+
+    public async Task AddTagsAsync(long articleId, List<string> tags)
+    {
+        if (_DbContext.Articles.All(x => x.Id != articleId)) throw new ArgumentException("articleId is not valid");
+        foreach (var tagName in tags)
+        {
+            if (_DbContext.ArticleTags.Any(x => x.ArticleId == articleId && x.TagName == tagName))
+                continue;
+            if (_DbContext.Tags.All(x => x.Name != tagName))
+            {
+                await _DbContext.Tags.AddAsync(new() { Name = tagName });
+            }
+            await _DbContext.ArticleTags.AddAsync(new() { ArticleId = articleId, TagName = tagName });
+        }
         await _DbContext.SaveChangesAsync();
 
     }
@@ -35,7 +51,8 @@ public class ArticleService : IArticleService
     public async Task<List<Article>> GetAsync(ArticleFilterDTO? filter = null)
     {
 
-        IQueryable<Article> articles = _DbContext.Articles.Include(x => x.Tags);
+        IQueryable<Article> articles = _DbContext.Articles.Include(x => x.Category)
+                                                          .Include(x => x.Tags);
         if (filter != null)
         {
             if (filter.AuthorId != null)

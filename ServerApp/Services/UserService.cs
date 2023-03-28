@@ -26,6 +26,8 @@ public class UserService : IUserService
 
     public async Task AddAsync(User user)
     {
+        if (_DbContext.Users.Any(x => x.Username == user.Username))
+            throw new Exception("User with this username already exists");
         user.Created = DateTime.Now;
         user.Password = Encode(user.Password);
         await _DbContext.Users.AddAsync(user);

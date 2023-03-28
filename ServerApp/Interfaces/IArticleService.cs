@@ -9,4 +9,5 @@ public interface IArticleService
     Task<Article?> GetByIdAsync(long id);
     Task AddAsync(Article entity);
     Task<bool> UpdateAsync(long id, EditArticeDto entity);
+    Task AddTagsAsync(long articleId, List<string> tags);
 }

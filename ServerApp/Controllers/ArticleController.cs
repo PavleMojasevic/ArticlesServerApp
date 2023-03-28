@@ -47,7 +47,7 @@ public class ArticleController : ControllerBase
 
     [HttpPost]
     public async Task<IActionResult> AddAsync([FromBody] ArticleAddDTO articleDTO)
-    { 
+    {
         Article article = _Mapper.Map<Article>(articleDTO);
         article.AuthorId = _ClaimService.GetUserId(User);
         try
@@ -61,6 +61,19 @@ public class ArticleController : ControllerBase
         }
 
     }
+    [HttpPost("{articleId}/Tags")]
+    public async Task<IActionResult> AddTagsAsync(long articleId, [FromBody] List<string> tags)
+    {
+        try
+        {
+            await _ArticleService.AddTagsAsync(articleId, tags);
+            return Ok();
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
     // PUT api/<ArticleController>/5
     [HttpPut("{articleId}")]
@@ -69,6 +82,6 @@ public class ArticleController : ControllerBase
         if (await _ArticleService.UpdateAsync(articleId, editArticeDto))
             return Ok();
         return BadRequest();
-    }  
+    }
 
 }
