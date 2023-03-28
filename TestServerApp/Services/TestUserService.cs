@@ -40,21 +40,22 @@ public class TestUserService
     [Fact]
     public async Task AddUserAsync()
     {
-        await _UserService.AddAsync(_MockUsers.GetUsers().First());
+        User user = new();
+        user.Username += "new";
+        await _UserService.AddAsync(user);
     }
     [Fact]
     public async Task AddUser_ThrowsExceptionAsync()
     {
         try
         {
-
             await _UserService.AddAsync(_MockUsers.GetUsers().First());
+            Assert.True(false);
         }
         catch (Exception)
         {
             Assert.True(true);
         }
-        Assert.True(false);
     }
     [Theory]
     [InlineData(true)]

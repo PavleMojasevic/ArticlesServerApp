@@ -33,6 +33,7 @@ public class CommentController : ControllerBase
     }
     [HttpPost]
     [Authorize]
+    [Authorize(Roles = "READER")]
     public async Task<IActionResult> AddCommentAsync([FromBody] CommentAddDTO commentDTO)
     {
 
@@ -44,6 +45,7 @@ public class CommentController : ControllerBase
     }
 
     [HttpPut("Like/{commentId}")]
+    [Authorize(Roles = "READER")]
     public async Task<IActionResult> AddLikeAsync(long commentId)
     {
         long userId = _ClaimService.GetUserId(User);
@@ -52,6 +54,7 @@ public class CommentController : ControllerBase
         return BadRequest();
     }
     [HttpDelete("Like/{commentId}")]
+    [Authorize(Roles = "READER")]
     public async Task<IActionResult> RemoveLikeAsync(long commentId)
     {
         long userId = _ClaimService.GetUserId(User);
@@ -60,6 +63,7 @@ public class CommentController : ControllerBase
         return BadRequest();
     }
     [HttpPut("Dislike/{commentId}")]
+    [Authorize(Roles = "READER")]
     public async Task<IActionResult> AddDislikeAsync(long commentId)
     {
         long userId = _ClaimService.GetUserId(User);
@@ -68,6 +72,7 @@ public class CommentController : ControllerBase
         return BadRequest();
     }
     [HttpDelete("Dislike/{commentId}")]
+    [Authorize(Roles = "READER")]
     public async Task<IActionResult> RemoveDislikeAsync(long commentId)
     {
         long userId = _ClaimService.GetUserId(User);
@@ -76,6 +81,7 @@ public class CommentController : ControllerBase
         return BadRequest();
     }
     [HttpPost("Approve/{commentId}")]
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> ApproveAsync(long commentId)
     {
         if (await _CommentService.ApproveAsync(commentId))
@@ -83,6 +89,7 @@ public class CommentController : ControllerBase
         return BadRequest();
     }
     [HttpPost("Reject/{commentId}")]
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> RejectAsync(long commentId)
     {
         if (await _CommentService.RejectAsync(commentId))
@@ -90,6 +97,7 @@ public class CommentController : ControllerBase
         return BadRequest();
     }
     [HttpGet("All")]
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> GetAllAsync()
     {
         return Ok(await _CommentService.GetAllAsync());

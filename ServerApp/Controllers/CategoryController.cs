@@ -22,12 +22,13 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> AddCategoryAsync([FromBody] CategoryAddDTO categoryDTO)
     {
         Category category = _Mapper.Map<Category>(categoryDTO);
         if (await _CategoryService.AddAsync(category))
             return Ok();
-        return BadRequest();
+        return BadRequest("Category already exists");
     }
     [HttpGet]
     public async Task<IActionResult> GetAsync()
@@ -36,6 +37,7 @@ public class CategoryController : ControllerBase
         return Ok(category);
     }
     [HttpPut("{categoryId}")]
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> EditCategoryAsync(long categoryId, [FromBody] CategoryDTO categoryDTO)
     {
         if (await _CategoryService.EditAsync(categoryId, categoryDTO))

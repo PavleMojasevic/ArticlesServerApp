@@ -97,21 +97,20 @@ public class MockArticles
             {
                 Content=null,
                 CategoryId=1,
-                Image=new byte[20],
                 Title="title"
             },
             new()
             {
                 Content="content",
                 CategoryId=null,
-                Image=new byte[20],
+                Image="",
                 Title="title"
             },
             new()
             {
                 Content="content",
                 CategoryId=1,
-                Image=new byte[20],
+                Image="",
                 Title="title"
             },
             new()
@@ -125,7 +124,6 @@ public class MockArticles
             {
                 Content="content",
                 CategoryId=1,
-                Image=new byte[20],
                 Title=null
             }
         };

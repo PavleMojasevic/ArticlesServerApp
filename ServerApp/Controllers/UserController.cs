@@ -23,6 +23,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "ADMIN")]
     public async Task<IActionResult> GetAsync()
     {
         List<User>? articles = await _UserService.GetAsync();

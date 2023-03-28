@@ -10,6 +10,7 @@ namespace ServerApp.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[Authorize]
 public class ArticleController : ControllerBase
 {
     IArticleService _ArticleService;
@@ -46,6 +47,7 @@ public class ArticleController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "AUTHOR")]
     public async Task<IActionResult> AddAsync([FromBody] ArticleAddDTO articleDTO)
     {
         Article article = _Mapper.Map<Article>(articleDTO);
@@ -62,6 +64,7 @@ public class ArticleController : ControllerBase
 
     }
     [HttpPost("{articleId}/Tags")]
+    [Authorize(Roles = "AUTHOR")]
     public async Task<IActionResult> AddTagsAsync(long articleId, [FromBody] List<string> tags)
     {
         try
@@ -77,6 +80,7 @@ public class ArticleController : ControllerBase
 
     // PUT api/<ArticleController>/5
     [HttpPut("{articleId}")]
+    [Authorize(Roles = "AUTHOR")]
     public async Task<IActionResult> UpdateAsync(long articleId, [FromBody] EditArticeDto editArticeDto)
     {
         if (await _ArticleService.UpdateAsync(articleId, editArticeDto))
