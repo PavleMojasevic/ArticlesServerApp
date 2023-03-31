@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 #nullable disable
 
@@ -67,7 +67,7 @@ public partial class Initial : Migration
                     .Annotation("Sqlite:Autoincrement", true),
                 Title = table.Column<string>(type: "TEXT", nullable: false),
                 Content = table.Column<string>(type: "TEXT", nullable: false),
-                Image = table.Column<byte[]>(type: "BLOB", nullable: true),
+                Image = table.Column<string>(type: "TEXT", nullable: true),
                 AuthorId = table.Column<long>(type: "INTEGER", nullable: false),
                 CategoryId = table.Column<long>(type: "INTEGER", nullable: false),
                 Date = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -90,24 +90,24 @@ public partial class Initial : Migration
             });
 
         migrationBuilder.CreateTable(
-            name: "ArticleTag",
+            name: "ArticleTags",
             columns: table => new
             {
-                ArticlesId = table.Column<long>(type: "INTEGER", nullable: false),
-                TagsName = table.Column<string>(type: "TEXT", nullable: false)
+                ArticleId = table.Column<long>(type: "INTEGER", nullable: false),
+                TagName = table.Column<string>(type: "TEXT", nullable: false)
             },
             constraints: table =>
             {
-                table.PrimaryKey("PK_ArticleTag", x => new { x.ArticlesId, x.TagsName });
+                table.PrimaryKey("PK_ArticleTags", x => new { x.ArticleId, x.TagName });
                 table.ForeignKey(
-                    name: "FK_ArticleTag_Articles_ArticlesId",
-                    column: x => x.ArticlesId,
+                    name: "FK_ArticleTags_Articles_ArticleId",
+                    column: x => x.ArticleId,
                     principalTable: "Articles",
                     principalColumn: "Id",
                     onDelete: ReferentialAction.Cascade);
                 table.ForeignKey(
-                    name: "FK_ArticleTag_Tags_TagsName",
-                    column: x => x.TagsName,
+                    name: "FK_ArticleTags_Tags_TagName",
+                    column: x => x.TagName,
                     principalTable: "Tags",
                     principalColumn: "Name",
                     onDelete: ReferentialAction.Cascade);
@@ -210,9 +210,9 @@ public partial class Initial : Migration
             column: "CategoryId");
 
         migrationBuilder.CreateIndex(
-            name: "IX_ArticleTag_TagsName",
-            table: "ArticleTag",
-            column: "TagsName");
+            name: "IX_ArticleTags_TagName",
+            table: "ArticleTags",
+            column: "TagName");
 
         migrationBuilder.CreateIndex(
             name: "IX_Categories_ParentId",
@@ -248,7 +248,7 @@ public partial class Initial : Migration
     protected override void Down(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.DropTable(
-            name: "ArticleTag");
+            name: "ArticleTags");
 
         migrationBuilder.DropTable(
             name: "CommentUser");

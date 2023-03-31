@@ -11,8 +11,8 @@ using ServerApp.Infrastucture;
 namespace ServerApp.Migrations
 {
     [DbContext(typeof(ArticlesDbContext))]
-    [Migration("20230328140351_image")]
-    partial class image
+    [Migration("20230331084659_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
